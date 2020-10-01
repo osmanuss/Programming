@@ -2,13 +2,9 @@
 
 int main()
 {
-    double c;
-    int a;
-    int b;
-    double d;
-    a = 3;
-    b = 3.14;
-    c = 3;
-    d = 3.14;
+    double c = 3;
+    int a = 3;
+    int b = 3.4;
+    double d = 3.4;
     std::cout << a << std::endl << b << std::endl << c << std::endl << d << std::endl;
 }
