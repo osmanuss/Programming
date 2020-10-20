@@ -20,7 +20,7 @@ int main()
 	std::cout << std::endl;
 	if (a != 0 && b != 0 && c != 0)
 	{
-		d = (b * b) - (4 * a * c);
+		d = sqrt((b * b) - (4 * a * c));
 		if (d > 0)
 		{
 			x1 = (-b + d) / (2*a);
