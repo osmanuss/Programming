@@ -1,79 +1,33 @@
 ﻿#include <iostream>
-#include <math.h>
+#include <cmath>
 
-int main()
-{
-	setlocale(LC_ALL, "Russian");
-	float a, b, c, x1, x2, d;
-	a = 0;
-	b = 0;
-	c = 0;
-	x1 = 0;
-	x2 = 0;
-	d = 0;
-	std::cout << "Вас приветствует программа по нахождению корня квадратного уравнения. Прошу вас ввести все переменные" << std::endl;
-	std::cin >> a;
-	std::cout << std::endl;
-	std::cin >> b;
-	std::cout << std::endl;
-	std::cin >> c;
-	std::cout << std::endl;
-	if (a != 0 && b != 0 && c != 0)
-	{
-		d = sqrt((b * b) - (4 * a * c));
-		if (d > 0)
-		{
-			x1 = (-b + d) / (2*a);
-			x2 = (-b - d) / (2*a);
-			std::cout << "Корни вашего уравнения: " << x1 << " " << x2;
+int main() {
+	setlocale(LC_ALL, "rus");
+	std::cout << "Введите 3 вещественных числа, каждое в отдельной строке" << std::endl;
+	double a, b, c;
+	std::cin >> a >> b >> c;
+	if (a == 0) {
+		if (b == 0) {
+			std::cout << "Корней нет" << std::endl;
 		}
-		if (d == 0)
-		{
-			x1 = -b / 2*a;
-			std::cout << "Корень вашего уравнения : " << x1;
+		else {
+			std::cout << "x = " << -c / b << std::endl;
 		}
+	}
+	else {
+		double d = b * b - 4 * a * c;
 		if (d < 0)
-		{
-			std::cout << "Ваше уравнение не имеет корней";
+			std::cout << "Не найдено действительных корней" << std::endl;
+		else if (d == 0) {
+			std::cout << "x = " << -b / (2 * a) << std::endl;
+		}
+		else {
+			double d_sqrt{ std::sqrt(d) };
+			double x1 = (-b + d_sqrt) / (2 * a);
+			double x2 = (-b - d_sqrt) / (2 * a);
+
+			std::cout << "x1 = " << x1 << std::endl;
+			std::cout << "x2 = " << x2 << std::endl;
 		}
 	}
-	if (a == 0 && b != 0 && c != 0)
-	{
-		x1 = -(c / b);
-		std::cout<< "Корень вашего уравнения : " << x1;
-	}
-	if (a != 0 && b == 0 && c != 0)
-	{
-		if (c <= 0)
-		{
-			x1 = sqrt(-c);
-			x2 = -sqrt(-c);
-			std::cout << "Корни вашего уравнения: " << x1 << " " << x2;
-		}
-		if (c > 0)
-		{
-			std::cout << "Ваше уравнение не имеет корней";
-		}
-	}
-	if (a != 0 && b != 0 && c == 0)
-	{
-		x1 = 0;
-		x2 = -b;
-		std::cout << "Корни вашего уравнения: " << x1 << " " << x2;
-	}
-	if (a == 0 && b == 0 && c != 0)
-	{
-		std::cout << "Ваше уравнение может иметь любой корень";
-	}
-	if (a != 0 && b == 0 && c == 0)
-	{
-		x1 = 0;
-		std::cout << "Корень вашего уравнения : " << x1;
-	}
-	if (a == 0 && b != 0 && c == 0)
-	{
-		x1 = 0;
-		std::cout << "Корень вашего уравнения : " << x1;
-	}
-	return(0);
 }
