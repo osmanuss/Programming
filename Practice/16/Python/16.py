@@ -1,24 +1,20 @@
-import re
+a = int(input())
 
-def match(ticket):
-    return re.match("^a(?:(?:[a-z][0-9]{2})|(?:[0-9][a-z][0-9])|(?:[0-9]{2}[a-z]))55661$", ticket)
+arr = []
 
-def validator():
-    return [x for x in map(str, input().split(" ")) if match(x)]
+for i in range(a):
+    arr.append(input())
 
-while True:
-    try:
-        n = int(input("Введите число: "))
+vec = []
+is_existed = 0
 
-        if n < 1:
-            print("Число меньше 1. Повторите ввод.")
-            continue
+for i in range(a):
+    if arr[i][0] == 'a' and arr[i][8] == '1' and arr[i][7] == '6' and arr[i][6] == '6' and arr[i][5] == '5' and arr[i][4] == '5':
+        vec.append(arr[i])
+        is_existed = 1
 
-        bilet = validator()
-
-        print(' '.join(bilet) if bilet else -1)
-
-        break
-
-    except KeyboardInterrupt:
-        break
+if is_existed:
+    for i in range(len(vec)):
+        print(vec[i])
+else:
+    print("-1\n")
