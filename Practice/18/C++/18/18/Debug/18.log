@@ -1,0 +1,7 @@
+﻿  18.cpp
+D:\univer\programming\Practice\18\C++\18\18\18.cpp(27,21): warning C4018: <: несоответствие типов со знаком и без знака
+D:\univer\programming\Practice\18\C++\18\18\18.cpp(44,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\univer\programming\Practice\18\C++\18\18\18.cpp(47,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\univer\programming\Practice\18\C++\18\18\18.cpp(56,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\univer\programming\Practice\18\C++\18\18\18.cpp(57,20): warning C4804: *=: небезопасное использование типа "bool" в операции
+  18.vcxproj -> D:\univer\programming\Practice\18\C++\18\Debug\18.exe

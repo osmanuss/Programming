@@ -1,29 +1,22 @@
 ﻿#include <iostream>
-#include <string>
-#include <vector>
-
-int main()
-{
-	int a;
-	std::cin >> a;
-	bool exist = 0;
-	std::string* arr = new std::string[a];
-	for (int i = 0; i < a; i++)
-		std::cin >> arr[i];
-	std::vector<std::string> vec;
-	for (int i = 0; i < a; i++)
+int main() {
+	setlocale(LC_ALL, "ru");
+	int i, n, f;
+	f = 0;
+	std::cin >> n;
+	std::string a{};
+	for (i = 1; i <= n; i++)
 	{
-		if (arr[i][0] == 'a' && arr[i][8] == '1' && arr[i][7] == '6' && arr[i][6] == '6' && arr[i][5] == '5' && arr[i][4] == '5')
+		std::cin >> a;
+		if (a[0] == 'a' && a[4] == '5' && a[5] == '5' && a[6] == '6' && a[7] == '6' && a[8] == '1')
 		{
-			vec.push_back(arr[i]);
-			exist = 1;
+			std::cout << a << ' ';
+			f++;
 		}
 	}
-	if (exist)
-		for (auto i = vec.begin(); i < vec.end(); i++)
-			std::cout << *i << ' ';
-	else
-		std::cout << "-1\n";
-	delete[] arr;
+	if (f == 0)
+	{
+		std::cout << "-1";
+	}
 	return 0;
 }

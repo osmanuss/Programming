@@ -1,20 +1,11 @@
-a = int(input())
+import re
 
-arr = []
-
-for i in range(a):
-    arr.append(input())
-
-vec = []
-is_existed = 0
-
-for i in range(a):
-    if arr[i][0] == 'a' and arr[i][8] == '1' and arr[i][7] == '6' and arr[i][6] == '6' and arr[i][5] == '5' and arr[i][4] == '5':
-        vec.append(arr[i])
-        is_existed = 1
-
-if is_existed:
-    for i in range(len(vec)):
-        print(vec[i])
-else:
-    print("-1\n")
+bilets = input()
+s = input()
+case1 = r"a[0-9]{2}[a-z]55661"
+case2 = r"a[a-z][0-9]{2}55661"
+case3 = r"a[0-9][a-z][0-9]55661"
+answer = re.findall(case1, s)
+answer.extend(re.findall(case2, s))
+answer.extend(re.findall(case3, s))
+print(' '.join(answer) if answer != [] else -1)
