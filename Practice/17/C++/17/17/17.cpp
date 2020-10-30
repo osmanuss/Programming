@@ -1,18 +1,18 @@
 ﻿#include <iostream>
 #include <vector>
 
-struct Roulette
+struct Ruletka
 {
 	int num;
 	int color;
-	int dorp_rate;
+	int dorpRate;
 };
 
 int main()
 {
 	const int n = 37;
 
-	Roulette arr[n];
+	Ruletka arr[n];
 	memset(arr, 0, sizeof(arr));
 
 	for (int i = 1; i < n; i++)
@@ -57,14 +57,14 @@ int main()
 			if (cin > 36)
 				continue;
 
-			arr[cin].dorp_rate++;
+			arr[cin].dorpRate++;
 
 			for (int i = 0; i < n; i++)
-				if (arr[i].dorp_rate > most_drops)
-					most_drops = arr[i].dorp_rate;
+				if (arr[i].dorpRate > most_drops)
+					most_drops = arr[i].dorpRate;
 
 			for (int i = 0; i < n; i++)
-				if (arr[i].dorp_rate == most_drops)
+				if (arr[i].dorpRate == most_drops)
 					std::cout << arr[i].num << ' ';
 			std::cout << '\n';
 
@@ -85,7 +85,7 @@ int main()
 		}
 
 		for (int i = 0; i < n; i++)
-			arr[i].dorp_rate = 0;
+			arr[i].dorpRate = 0;
 
 		drop_rate_nums.clear();
 		for (int i = 0; i < n; i++)
