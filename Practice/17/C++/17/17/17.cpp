@@ -1,100 +1,57 @@
 ﻿#include <iostream>
-#include <vector>
-
-struct Ruletka
-{
-	int num;
-	int color;
-	int rate;
-};
-
-int main()
-{
-	const int n = 37;
-
-	Ruletka arr[n];
-	memset(arr, 0, sizeof(arr));
-
-	for (int i = 1; i < n; i++)
-		arr[i].num = i;
-
-	for (int i = 1; i < 11; i++)
-		arr[i].color = i % 2;
-
-	arr[11].color = 0;
-
-	for (int i = 12; i < 19; i++)
-		arr[i].color = (i + 1) % 2;
-
-	for (int i = 19; i < 29; i++)
-		arr[i].color = i % 2;
-
-	arr[29].color = 0;
-
-	for (int i = 30; i < n; i++)
-		arr[i].color = (i + 1) % 2;
-
-	std::vector<int> drop_rate_nums;
-	for (int i = 0; i < n; i++)
-		drop_rate_nums.push_back(i);
-
-	std::pair<int, int> drop_rate_b_r;
-	drop_rate_b_r.first = 0;
-	drop_rate_b_r.second = 0;
-
-	int most_drops = 0;
-
-	int k = 3;
-	int cin;
-
-	while (true)
+int main() {
+	setlocale(LC_ALL, "Russian");
+	const int f = 37;
+	int n[f], x, x1 = 0, x2 = 0, a = 0;
+	int r[18] = { 1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36 };
+	for (int i = 0; i < f; i++) {
+		n[i] = 0;
+	}
+	while (1) 
 	{
-		for (int j = 0; j < k; j++)
+		std::cin >> x;
+		if (x < 0) 
 		{
-			std::cin >> cin;
-			if (cin < 0)
-				return 0;
-			if (cin > 36)
-				continue;
-
-			arr[cin].rate++;
-
-			for (int i = 0; i < n; i++)
-				if (arr[i].rate > most_drops)
-					most_drops = arr[i].rate;
-
-			for (int i = 0; i < n; i++)
-				if (arr[i].rate == most_drops)
-					std::cout << arr[i].num << ' ';
-			std::cout << '\n';
-
-			for (auto i = drop_rate_nums.begin(); i < drop_rate_nums.end(); i++)
-				if (*i == cin)
+			break;
+		}
+		else 
+		{
+			n[x]++;
+			for (int k = 0; k < 18; k++) 
+			{
+				if (x == r[k]) 
 				{
-					drop_rate_nums.erase(i);
+					x1++;
 					break;
 				}
-
-			for (auto i = drop_rate_nums.begin(); i < drop_rate_nums.end(); i++)
-				std::cout << *i << ' ';
-			std::cout << '\n';
-
-			arr[cin].color == 0 ? drop_rate_b_r.first++ : drop_rate_b_r.second++;
-
-			std::cout << drop_rate_b_r.second << ' ' << drop_rate_b_r.first << "\n\n";
+				else if (k == 17) 
+				{
+					x2++;
+				}
+			}
 		}
-
-		for (int i = 0; i < n; i++)
-			arr[i].rate = 0;
-
-		drop_rate_nums.clear();
-		for (int i = 0; i < n; i++)
-			drop_rate_nums.push_back(i);
-
-		drop_rate_b_r.first = 0;
-		drop_rate_b_r.second = 0;
-		most_drops = 0;
+		for (int l = 0; l < f; l++) 
+		{
+			if (n[l] > a) 
+			{
+				a = n[l];
+			}
+		}
+		for (int l = 0; l < f; l++) 
+		{
+			if (n[l] == a) 
+			{
+				std::cout << l << " ";
+			}
+		}
+		std::cout << "\n";
+		for (int l = 0; l < f; l++) 
+		{
+			if (n[l] == 0) 
+			{
+				std::cout << l << " ";
+			}
+		}
+		std::cout << "\n" << x1 << " " << x2 << "\n";
 	}
-
-	return 0;
 }
