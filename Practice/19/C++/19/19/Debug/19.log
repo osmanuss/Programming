@@ -1,0 +1,5 @@
+﻿  19.cpp
+D:\univer\proga\programming\Practice\19\C++\19\19\19.cpp(14,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\univer\proga\programming\Practice\19\C++\19\19\19.cpp(63,21): warning C4018: <: несоответствие типов со знаком и без знака
+D:\univer\proga\programming\Practice\19\C++\19\19\19.cpp(44): warning C4715: charNum_to_int: значение возвращается не при всех путях выполнения
+  19.vcxproj -> D:\univer\proga\programming\Practice\19\C++\19\Debug\19.exe
