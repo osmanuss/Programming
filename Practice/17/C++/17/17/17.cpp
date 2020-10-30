@@ -5,7 +5,7 @@ struct Ruletka
 {
 	int num;
 	int color;
-	int dorpRate;
+	int rate;
 };
 
 int main()
@@ -57,14 +57,14 @@ int main()
 			if (cin > 36)
 				continue;
 
-			arr[cin].dorpRate++;
+			arr[cin].rate++;
 
 			for (int i = 0; i < n; i++)
-				if (arr[i].dorpRate > most_drops)
-					most_drops = arr[i].dorpRate;
+				if (arr[i].rate > most_drops)
+					most_drops = arr[i].rate;
 
 			for (int i = 0; i < n; i++)
-				if (arr[i].dorpRate == most_drops)
+				if (arr[i].rate == most_drops)
 					std::cout << arr[i].num << ' ';
 			std::cout << '\n';
 
@@ -85,7 +85,7 @@ int main()
 		}
 
 		for (int i = 0; i < n; i++)
-			arr[i].dorpRate = 0;
+			arr[i].rate = 0;
 
 		drop_rate_nums.clear();
 		for (int i = 0; i < n; i++)
