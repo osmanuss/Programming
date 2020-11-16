@@ -140,12 +140,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="23.cpp" />
-    <ClCompile Include="count.cpp" />
-    <ClCompile Include="fact.cpp" />
-    <ClCompile Include="taylor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header.h" />
+    <ClInclude Include="count.h" />
+    <ClInclude Include="fact.h" />
+    <ClInclude Include="taylor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
