@@ -1,0 +1,3 @@
+﻿  ConsoleApplication3.cpp
+D:\univer\proga\programming\Lab\01\С++\Server\ConsoleApplication3\ConsoleApplication3.cpp(8,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+  ConsoleApplication3.vcxproj -> D:\univer\proga\programming\Lab\01\С++\Server\x64\Debug\ConsoleApplication3.exe
