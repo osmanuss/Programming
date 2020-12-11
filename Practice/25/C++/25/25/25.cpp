@@ -1,95 +1,150 @@
 ﻿#include <iostream>
-#include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
-using vector_t = std::vector<int>;
-using matrix_t = std::vector<vector_t>;
-bool is_more(const int& first, const int& second)
+std::vector<int> bozoSort(std::vector<int> arr, bool bl = 1)
 {
-	return first > second;
-}
-bool is_less(const int& first, const int& second)
-{
-	return first < second;
-}
-bool is_sorted(const vector_t& vector, const bool& asc)
-{
-	const auto sort = asc ? is_more : is_less;
-	for (size_t i = 1; i < vector.size(); ++i)
+	bool check = 1;
+	while (check)
 	{
-		if (sort(vector[i - 1], vector[i]))
+		int a = rand() * arr.size() / RAND_MAX;
+		int b = rand() * arr.size() / RAND_MAX;
+		int tmp = arr[a];
+		arr[a] = arr[b];
+		arr[b] = tmp;
+		if (bl)
 		{
-			return false;
+			bool tmpBool = 1;
+			for (auto i = arr.begin(); i != arr.end() - 1; i++)
+				if (*i > * (i + 1))
+				{
+					tmpBool = 0;
+					break;
+				}
+			check = !tmpBool;
+		}
+		else
+		{
+			bool tmpBool = 1;
+			for (auto i = arr.begin(); i != arr.end() - 1; i++)
+				if (*i < *(i + 1))
+				{
+					tmpBool = 0;
+					break;
+				}
+			check = !tmpBool;
 		}
 	}
-	return true;
-}
-vector_t BozoSort(const vector_t& vector, const bool& asc)
-{
-	vector_t result = vector;
-	if (vector.size() < 2)
-	{
-		return result;
-	}
-	const size_t size = result.size();
-	while (!is_sorted(result, asc))
-	{
-		std::swap(result[std::rand() % size], result[std::rand() % size]);
-	}
-	return result;
+	return arr;
 }
 
-vector_t BozoSort(const matrix_t& matrix, const bool& asc)
+std::vector <std::vector<int>> bozoSort(std::vector<std::vector<int>> arr, bool bl = 1)
 {
-	vector_t result;
-	for (const vector_t& row : matrix)
+	const int m = arr.size();
+	const int n = arr[0].size();
+	bool check = 1;
+	while (check)
 	{
-		for (int item : row)
+		int rand_1_1 = rand() * n / RAND_MAX;
+		int rand_1_2 = rand() * m / RAND_MAX;
+		int rand_2_1 = rand() * n / RAND_MAX;
+		int rand_2_2 = rand() * m / RAND_MAX;
+		int tmp = arr[rand_1_2][rand_1_1];
+		arr[rand_1_2][rand_1_1] = arr[rand_2_2][rand_2_1];
+		arr[rand_2_2][rand_2_1] = tmp;
+
+		if (bl)
 		{
-			result.push_back(item);
+			bool tmpBool = 1;
+			int previousNumber = arr[0][0];
+			for (int i = 0; i < m; i++)
+				for (int j = 0; j < n; j++)
+				{
+					if (previousNumber > arr[i][j])
+					{
+						tmpBool = 0;
+					}
+					previousNumber = arr[i][j];
+				}
+			check = !tmpBool;
+		}
+		else
+		{
+			bool tmpBool = 1;
+			int previousNumber = arr[0][0];
+			for (int i = 0; i < m; i++)
+				for (int j = 0; j < n; j++)
+				{
+					if (previousNumber < arr[i][j])
+					{
+						tmpBool = 0;
+					}
+					previousNumber = arr[i][j];
+				}
+			check = !tmpBool;
 		}
 	}
-	return BozoSort(result, asc);
+	return arr;
 }
-vector_t BozoSort(const int& a, const int& b, const int& c, const bool& asc)
-{
-	return BozoSort({ a, b, c }, asc);
-}
-void print(const vector_t& vector)
-{
-	for (size_t i = 0; i < vector.size() - 1; ++i)
-	{
-		std::cout << vector[i] << " ";
-	}
 
-	std::cout << vector[vector.size() - 1] << std::endl;
+std::vector<int> bozoSort(int a, int b, int c, bool bl = 1)
+{
+	std::vector<int> arr;
+	arr.push_back(a);
+	arr.push_back(b);
+	arr.push_back(c);
+	return bozoSort(arr, bl);
 }
+
+void printVector(std::vector<int> vec)
+{
+	for (auto i = vec.begin(); i != vec.end(); i++)
+		std::cout << *i << ' ';
+	std::cout << '\n';
+}
+
+void printVector(std::vector<std::vector<int>> vec)
+{
+	for (int i = 0; i < vec.size(); i++)
+		for (int j = 0; j < vec[i].size(); j++)
+			std::cout << vec[i][j] << ' ';
+	std::cout << '\n';
+}
+
 int main()
 {
-	std::srand(time(nullptr));
-	setlocale(LC_ALL, "Russian");
+	srand(time(NULL));
 	int n;
 	std::cin >> n;
-	matrix_t matrix;
-	vector_t vector;
-	vector_t buffer;
-	for (int i = 1; i <= n; ++i)
-	{
-		int num;
-		std::cin >> num;
-		buffer.push_back(num);
-		vector.push_back(num);
-		if (i % static_cast<int>(std::sqrt(n)) == 0)
-		{
-			matrix.push_back(buffer);
-			buffer.clear();
-		}
+	int* arr = new int[n];
+	for (int i = 0; i < n; i++)
+		std::cin >> arr[i];
+	std::vector<int> arr_1(n);
+	for (int i = 0; i < n; i++) {
+		arr_1[i] = arr[i];
 	}
-	print(BozoSort(vector, true));
-	print(BozoSort(vector, false));
-	print(BozoSort(matrix, true));
-	print(BozoSort(matrix, false));
-	print(BozoSort(vector[0], vector[1], vector[2], true));
-	print(BozoSort(vector[0], vector[1], vector[2], false));
+	auto arr_1_1 = bozoSort(arr_1);
+	auto arr_1_2 = bozoSort(arr_1, 0);
+	printVector(arr_1_1);
+	printVector(arr_1_2);
+	int m = sqrt(n);
+	std::vector<std::vector<int>> arr_2(m, std::vector<int>(m));
+	int k = 0;
+	for (int i = 0; i < m; i++)
+		for (int j = 0; j < m; j++)
+			arr_2[i][j] = arr[k++];
+	auto arr_2_1 = bozoSort(arr_2);
+	auto arr_2_2 = bozoSort(arr_2, 0);
+	printVector(arr_2_1);
+	printVector(arr_2_2);
+	int a = arr[0];
+	int b = arr[1];
+	int c = arr[2];
+	auto arr_3_1 = bozoSort(a, b, c);
+	auto arr_3_2 = bozoSort(a, b, c, 0);
+	printVector(arr_3_1);
+	printVector(arr_3_2);
+	delete[] arr;
+	return 0;
 }

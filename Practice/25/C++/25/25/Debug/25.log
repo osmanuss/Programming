@@ -1,3 +1,6 @@
 ﻿  25.cpp
-D:\univer\proga\programming\Practice\25\C++\25\25\25.cpp(70,17): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+D:\univer\proga\programming\Practice\25\C++\25\25\25.cpp(109,20): warning C4018: <: несоответствие типов со знаком и без знака
+D:\univer\proga\programming\Practice\25\C++\25\25\25.cpp(110,21): warning C4018: <: несоответствие типов со знаком и без знака
+D:\univer\proga\programming\Practice\25\C++\25\25\25.cpp(117,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+D:\univer\proga\programming\Practice\25\C++\25\25\25.cpp(131,8): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
   25.vcxproj -> D:\univer\proga\programming\Practice\25\C++\25\Debug\25.exe

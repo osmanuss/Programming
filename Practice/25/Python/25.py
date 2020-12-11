@@ -1,21 +1,21 @@
 import random
-def Bozosort(mas, second=0, third='', direction=True):
+def Bozosort(first, second=0, third='', fourth=True):
     if third == '':
-            real_sort = mas.copy()
+            real_sort = first.copy()
             real_sort.sort()
-            if not direction:
+            if not fourth:
                 real_sort.reverse()
-            while mas != real_sort:
-                x1 = random.randrange(0, len(mas))
-                x2 = random.randrange(0, len(mas))
+            while first != real_sort:
+                x1 = random.randrange(0, len(first))
+                x2 = random.randrange(0, len(first))
                 
                 while x1 == x2:
-                    x2 = random.randrange(0, len(mas))
+                    x2 = random.randrange(0, len(first))
                     
-                mas[x1], mas[x2] = mas[x2], mas[x1] 
-            return mas
+                first[x1], first[x2] = first[x2], first[x1] 
+            return first
     else:
-        return Bozosort([mas, second, third], direction=direction)
+        return Bozosort([first, second, third], fourth=fourth)
 if __name__ == "__main__":
     n = int(input())
     x = list(map(int, input().split()))
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     Bozosort(x)
     x_sqr = tuple(x)
     print(" ".join(map(str, x)))
-    Bozosort(x, direction=False)
+    Bozosort(x, fourth=False)
     print(" ".join(map(str, x)))
     print(" ".join(map(str, x_sqr)))
     print(" ".join(map(str, x)))
