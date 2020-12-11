@@ -105,7 +105,6 @@ void justDoIt()
 int main()
 {
 	std::srand(time(nullptr));
-	setlocale(LC_ALL, "Russian");
 	justDoIt<double>();
 	justDoIt<std::string>();
 }
