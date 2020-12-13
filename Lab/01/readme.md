@@ -72,7 +72,8 @@ http://worldtimeapi.org/api/timezone/Europe/Simferopol
 
 <подробности>
 
-``#include <iostream>
+```c++
+#include <iostream>
 #include <cpp_httplib/httplib.h>
 #include <nlohmann/json.hpp>
 #include <iomanip>
@@ -243,6 +244,7 @@ int main()
     cout << "Start server... OK\n";
     svr.listen("localhost", 3000);
 }
+```
 
 
 5. ### Клиент
@@ -251,7 +253,8 @@ int main()
 <подробности>
 
 
-`` from tkinter import *
+```Python
+ from tkinter import *
 import json
 import requests
 def WeatherReload(event=None):
@@ -277,7 +280,7 @@ description.pack()
 temperature.pack(expand=True)
 WeatherReload()
 root.mainloop()
-
+```
 
 6. ### Внешний вид HTML-виджета и python-приложения
 
