@@ -17,11 +17,8 @@ void gen_response_raw(const Request& req, Response& res);
 
 json GetWeather()
 {
-    string req, adr, param, api;
-    adr = "/data/2.5/onecall?id=524901&";
-    param = "lat=44.95719&lon=34.11079&exclude=current,minutely,daily,alerts&units=metric&lang=ru&";
-    api = "appid=8ef4d6cf87e941cd535e7c370ad0a401";
-    req = adr + param + api;
+    string req;
+    req = "/data/2.5/onecall?lat=44&lon=34&units=metric&exclude=current,minutely,daily,alerts&lang=ru&appid=8ef4d6cf87e941cd535e7c370ad0a401";
 
     Client get_time("http://api.openweathermap.org");
     auto res = get_time.Get(req.c_str());
@@ -189,9 +186,9 @@ void gen_response(const Request& req, Response& res)
 
 int main()
 {
-    Server weather;
-    weather.Get("/", gen_response);
-    weather.Get("/raw", gen_response_raw);
+    Server svr;
+    svr.Get("/", gen_response);
+    svr.Get("/raw", gen_response_raw);
     cout << "Start server... OK\n";
-    weather.listen("localhost", 3000);
+    svr.listen("localhost", 3000);
 }

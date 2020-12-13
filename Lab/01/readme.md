@@ -72,198 +72,178 @@ http://worldtimeapi.org/api/timezone/Europe/Simferopol
 
 <подробности>
 
-`` С ++
-#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <строка>
-#include <fstream>
-#include <chrono>
+``#include <iostream>
+#include <cpp_httplib/httplib.h>
+#include <nlohmann/json.hpp>
 #include <iomanip>
-#include <json / json.hpp>
-#include <cpp_httplib / httplib.h>
-
-используя json = nlohmann :: json;
-используя пространство имен httplib;
-
-std :: string html_str;
-
-
-void json_init (const Result & res, json & new_json)
+#include <fstream>
+using json = nlohmann::json;
+using std::cout;
+using std::endl;
+using std::string;
+using std::ifstream;
+using std::ofstream;
+using namespace httplib;
+void gen_response(const Request& req, Response& res);
+void gen_response_raw(const Request& req, Response& res);
+json GetWeather()
 {
-    если (res)
-    {
-        если (res-> status == 200)
-            new_json = json :: parse (res-> body);
-        еще
-            std :: cout << "Код состояния:" << res-> status << std :: endl;
-    }
-    еще
-    {
-        авто ошибка = res.error ();
-        std :: cout << "Код ошибки:" << err << std :: endl;
-    }
-}
-
-std :: string current_time_str ()
-{
-    авто current_time = std :: chrono :: system_clock :: now ();
-
-    std :: time_t current_time_t = std :: chrono :: system_clock :: to_time_t (current_time);
-    std :: string date_new;
-    date_new = ctime (& current_time_t);
-
-    std :: string time_now;
-    если (date_new [11]! = '0')
-        time_now + = date_new [11];
-    time_now + = date_new [12];
-    return time_now;
-}
-
-int current_time_int ()
-{
-    авто current_time = std :: chrono :: system_clock :: now ();
-
-    std :: time_t current_time_t = std :: chrono :: system_clock :: to_time_t (current_time);
-    std :: string date_new;
-    date_new = ctime (& current_time_t);
-
-    std :: string time_now;
-    если (date_new [11]! = '0')
-        time_now + = date_new [11];
-    time_now + = date_new [12];
-
-    вернуть atoi (time_now.c_str ());
-}
-
-void html_editing (std :: string & html_str, const std :: string & raw_arg, const std :: string & arg)
-{
-    size_t position = html_str.find (raw_arg);
-    пока (позиция! = std :: string :: npos)
-    {
-        html_str.replace (позиция, raw_arg.size (), arg);
-        позиция = html_str.find (raw_arg, position + arg.size ());
-    }
-}
-
-void gen_response (const Request и req, ответ и res) 
-{
-    html_editing (html_str, "{ежечасно [i] .temp}", current_time_str ());
-
-    json tmp;
-    std :: fstream cache ("cache.txt");
-
-    если (! cache.is_open ())
-        std :: cerr << "Ошибка! \ nФайл не открыт \ n";
-    еще
-        кеш >> tmp;
-
-    std :: string description_raw = tmp [current_time_int ()] ["описание"]. dump ();
-    
-    std :: string description;
-    для (int i = 0; i <description_raw.size (); i ++)
-        if (description_raw [i]! = char (34) && description_raw [i]! = '\\')
-            description + = description_raw [i];
-
-    html_editing (html_str, "{ежечасно [i] .weather [0] .description}", описание);
-
-    std :: string icon_raw = tmp [current_time_int ()] ["значок"]. dump ();
-    std :: string icon;
-    для (int i = 0; i <icon_raw.size (); i ++)
-        если (icon_raw [i]! = char (34) && icon_raw [i]! = '\\')
-            icon + = icon_raw [i];
-
-    html_editing (html_str, "{ежечасно [i] .weather [0] .icon}", значок);
-  
-    cache.close ();
-    res.set_content (html_str, "текст / html; charset = utf-8");
-}
-
-void gen_response_raw (const Request & req, Response & res) 
-{
-    std :: fstream cache ("cache.txt");
-    std :: string rawR;
-    если (cache.is_open ())
-        getline (кеш, rawR, '\ 0');
-    еще
-    {
-        std :: cerr << "Ошибка! \ nФайл не открыт \ n";
-        возвращение;
-    }
-    std :: string raw;
-    для (int i = 0; i <rawR.length (); i ++)
-    {
-        если (rawR [i] == '\\')
+    string req;
+    req = "/data/2.5/onecall?lat=44&lon=34&units=metric&exclude=current,minutely,daily,alerts&lang=ru&appid=8ef4d6cf87e941cd535e7c370ad0a401";
+    Client get_time("http://api.openweathermap.org");
+    auto res = get_time.Get(req.c_str());
+    if (res) {
+        if (res->status == 200)
         {
-            i ++;
-            Продолжать;
+            json result = res->body;
+            return result;
         }
-        raw + = rawR [я];
+        else
+        {
+            cout << "Status code: " << res->status << endl;
+        }
     }
-
-    res.set_content (raw, «текст / простой; кодировка = utf-8»);
-}
-
-int main () {
-    Сервер svr;
-    
-
-    Клиент openweather_cli ("http://api.openweathermap.org");
-    auto openweather_res = openweather_cli.Get ("/ data / 2.5 / onecall? id = 524901 & appid = ff1484a9c853eaf0e82bdeee8b3cae19 & lang = ru & units = metric & lat = 44.95719 & lon = 34.11079 & exclude = текущие, минутные, ежедневные, ежедневные, ежедневные,
-
-    json openweather_json;
-    json_init (openweather_res, openweather_json);
- 
-    Клиент worldtime_cli ("http://worldtimeapi.org");
-    auto worldtime_res = worldtime_cli.Get ("/ api / timezone / Европа / Симферополь");
-    
-    json worldtime_json;
-    json_init (worldtime_res, worldtime_json);
-  
-    json tmp = json :: array ();
-
-    json * tmp_arr = новый json [48];
-
-    для (int я = 0; я <48; я ++)
+    else
     {
-        tmp_arr [i] ["время"] = i;
-        tmp_arr [i] ["temp"] = (int) openweather_json ["ежечасно"] [i] ["temp"];
-        std :: string description = openweather_json ["ежечасно"] [i] ["погода"] [0] ["описание"]. dump ();
-        std :: string icon = openweather_json ["ежечасно"] [я] ["погода"] [0] ["значок"]. dump ();
-        tmp_arr [я] ["значок"] = значок;
-        tmp_arr [i] ["description"] = описание;
-        tmp [i] = tmp_arr [i];
+        auto err = res.error();
+        cout << "Error code: " << err << endl;
     }
-
-    удалить [] tmp_arr;
-    
-    std :: string cache_str = tmp.dump ();
-    std :: ofstream cache ("cache.txt");
-
-    если (! cache.is_open ())
-        std :: cerr << "Ошибка! \ nФайл не открыт \ n";
-    еще
-        кеш << cache_str;
-    cache.close ();
-
-    std :: ifstream html_file ("widget.html");
-
-    если (html_file.is_open ())
-        getline (html_file, html_str, '\ 0');
-    еще    
-        std :: cerr << "Ошибка! \ nФайл не открыт \ n";
-
-    html_file.close ();
-
-
-    svr.Get ("/", gen_response);
-    svr.Get ("/ raw", gen_response_raw);
-
-    std :: cout << "\ nЗапустить сервер ... ОК \ n";
-    svr.listen ("локальный хост", 3000);
-    возврат 0;
 }
-``
-</details>
+string GetTime()
+{
+    Client get_time("http://worldtimeapi.org");
+    auto res = get_time.Get("/api/timezone/Europe/Simferopol");
+    if (res) {
+        if (res->status == 200)
+        {
+            string result = res->body;
+            return result;
+        }
+        else
+        {
+            cout << "Status code: " << res->status << endl;
+        }
+    }
+    else
+    {
+        auto err = res.error();
+        cout << "Error code: " << err << endl;
+    }
+}
+bool is_empty_file(std::ifstream& pFile)
+{
+    return pFile.peek() == ifstream::traits_type::eof();
+}
+json CacheGenerator(ifstream& ReadCache)
+{
+    json RawCache;
+    RawCache = GetWeather();
+    ofstream wc("cache.json");
+    cout << "Generating cache..." << endl;
+    wc << std::setw(2) << RawCache << std::endl;
+    return RawCache;
+}
+string StringRemoover(string FToRemoove, json cache, int curr_hour)
+{
+    string r1 = "{hourly[i].weather[0].description}";
+    string r2 = "{hourly[i].weather[0].icon}";
+    string r3 = "{hourly[i].temp}";
+    double tempd = cache["hourly"][curr_hour]["temp"];
+    string temps = std::to_string(int(round(tempd)));
+    string desk = cache["hourly"][curr_hour]["weather"][0]["description"];
+    string icon = cache["hourly"][curr_hour]["weather"][0]["icon"];
+    FToRemoove.replace(FToRemoove.find(r1), r1.length(), desk);
+    FToRemoove.replace(FToRemoove.find(r2), r2.length(), icon);
+    FToRemoove.replace(FToRemoove.find(r3), r3.length(), temps);
+    FToRemoove.replace(FToRemoove.find(r3), r3.length(), temps);
+    return FToRemoove;
+}
+int WhatHour(json cache)
+{
+    int curr_hour = 100;
+    long unixtime;
+    json curr_time_full = json::parse(GetTime());
+    unixtime = curr_time_full["unixtime"];
+    for (int i = 0; i < 48; i++)
+    {
+        long w_unixtime = cache["hourly"][i]["dt"];
+        if (unixtime < w_unixtime)
+        {
+            curr_hour = i;
+            break;
+        }
+    }
+    return curr_hour;
+}
+json CacheReader(ifstream& rc)
+{
+    json RawCache;
+    bool not_exist_cache = !rc.is_open() or is_empty_file(rc);
+    if (not_exist_cache)
+    {
+        RawCache = CacheGenerator(rc);
+    }
+    else
+    {
+        rc >> RawCache;
+        cout << "Cache succesfully read" << endl;
+    }
+    return RawCache;
+}
+void gen_response_raw(const Request& req, Response& res)
+{
+    ifstream rc("cache.json");
+    json RawCache = CacheReader(rc);
+    string temp = RawCache;
+    json cache = json::parse(temp);
+    int curr_hour = WhatHour(cache);
+    if (curr_hour == 100)
+    {
+        RawCache = CacheGenerator(rc);
+        temp = RawCache;
+        cache = json::parse(temp);
+    }
+    json WeatherData;
+    double tempd = cache["hourly"][curr_hour]["temp"];
+    int tempi = round(tempd);
+    string desk = cache["hourly"][curr_hour]["weather"][0]["description"];
+    WeatherData["temperature"] = tempi;
+    WeatherData["description"] = desk;
+    res.set_content(WeatherData.dump(), "text/json");
+}
+void gen_response(const Request& req, Response& res)
+{
+    ifstream rc("cache.json");
+    json RawCache = CacheReader(rc);
+    string temp = RawCache;
+    json cache = json::parse(temp);
+    int curr_hour = WhatHour(cache);
+    if (curr_hour == 100)
+    {
+        RawCache = CacheGenerator(rc);
+        temp = RawCache;
+        cache = json::parse(temp);
+    }
+    string widget;
+    ifstream rw("template.html");
+    if (rw.is_open())
+    {
+        getline(rw, widget, '\0');
+    }
+    else
+        cout << "Can`t open template";
+    string output = StringRemoover(widget, cache, curr_hour);
+    res.set_content(output, "text/html");
+}
+int main()
+{
+    Server svr;
+    svr.Get("/", gen_response);
+    svr.Get("/raw", gen_response_raw);
+    cout << "Start server... OK\n";
+    svr.listen("localhost", 3000);
+}
+
 
 5. ### Клиент
 Создаём клиентское приложение, которое будет посылать запросы на наш локальный сервер при помощи "requests", обрабатывать json файл с помощью модуля "json" и отображать погоду на текущий момент при помощи "Tkinter". Приложение создается на python с использованием библиотеки tkinter.
@@ -271,71 +251,44 @@ int main () {
 <подробности>
 
 
-`` питон
-из tkinter import *
-запросы на импорт
-импортировать json
-дата и время импорта
-
-
-def refresh (event = None):
-    пытаться:
-        res = requests.get ('http: // localhost: 3000 / raw') .content.decode ("utf8")
-        data = json.loads (res)
-
-        current_time = datetime.datetime.now (). час
-        description.config (text = str (данные [текущее_время] ["описание"]))
-        temp.config (text = str ((data [current_time] ["temp"])) + «° C»)
-    кроме request.exceptions.ConnectionError:
-        проходят
-
-
-корень = Tk ()
-root.title ("Погода")
-root.pack_propagate (0)
-root.bind ("<Button-1>", обновить)
-root.geometry ("200x250")
-
-
-top_frame = Frame (root, bg = "# ffb84d", width = 100, height = 30)
-top_frame.pack (сторона = TOP, fill = X)
-
-middle_frame = Frame (root, bg = "# ffffff", width = 100, height = 30 * 3)
-middle_frame.pack (expand = True, fill = BOTH)
-
-bottom_frame = Кадр (корень, bg = "# ffb84d", ширина = 100, высота = 30)
-bottom_frame.pack (сторона = BOTTOM, fill = X)
-
-
-city ​​= Label (top_frame, font = ("Arial Bold", 12), text = "Симферополь", bg = "# ffb84d")
-description = Label (top_frame, font = ("Arial", 12), bg = "# ffb84d")
-temp = Label (middle_frame, font = ("Arial Bold", 48), bg = "# ffffff")
-
-city.pack (пады = 0)
-description.pack (pady = 0)
-temp.pack (expand = True)
-
-обновить ()
-root.mainloop ()
-
-``
-</details>
-<br>
-
+`` from tkinter import *
+import json
+import requests
+def WeatherReload(event=None):
+    r = requests.get('http://localhost:3000/raw').content.decode("UTF8")
+    weather = json.loads(r)
+    description.config(text=str(weather["description"]))
+    temperature.config(text=str(weather["temperature"]) + "°C")
+root = Tk()
+root.title("Погода")
+root.bind("<Button-3>", WeatherReload)
+root.geometry("185x220")
+TopFrame = Frame(root, bg="#ffcd57")
+MiddleFrame = Frame(root, bg="white")
+BottomFrame = Frame(root, bg="#ffcd57", height=30)
+TopFrame.pack(side=TOP, fill=X)
+MiddleFrame.pack(expand=True, fill=BOTH)
+BottomFrame.pack(side=BOTTOM, fill=X)
+city = Label(TopFrame, font=("Franklin Gothic Medium", 12), text="Симферополь", bg="#ffcd57")
+description = Label(TopFrame, font=("Georgia", 12), bg="#ffcd57")
+temperature = Label(MiddleFrame, font=("Impact", 60), bg="white")
+city.pack()
+description.pack()
+temperature.pack(expand=True)
+WeatherReload()
+root.mainloop()
 
 
 6. ### Внешний вид HTML-виджета и python-приложения
 
-
- 
 Скриншот виджета:
 
-! [] (./ images / 1.jpg)
+! [](./images/1.jpg)
 * рис. 1 html-виджет *
 
 Скриншот клиента:
 
-! [] (./ images / 2.jpg)
+! [](./images/2.jpg)
 * рис. 2 клиентское приложение *
 
 ## Вывод
