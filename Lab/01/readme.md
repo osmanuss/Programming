@@ -254,7 +254,7 @@ int main()
 
 
 ```Python
- from tkinter import *
+from tkinter import *
 import json
 import requests
 def WeatherReload(event=None):
