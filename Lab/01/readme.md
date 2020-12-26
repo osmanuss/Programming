@@ -287,12 +287,12 @@ root.mainloop()
 
 Скриншот виджета:
 
-! [] (./ image / app.png)
+! [] (./ image / app.jpg)
 * рис. 1 html-виджет *
 
 Скриншот клиента:
 
-! [] (./ image / widget.png)
+! [] (./ image / widget.jpg)
 * рис. 2 клиентское приложение *
 
 ## Вывод
