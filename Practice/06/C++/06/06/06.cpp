@@ -3,7 +3,7 @@
 
 int main() {
 	setlocale(LC_ALL, "rus");
-	std::cout << "Введите 3 вещественных числа, каждое в отдельной строке" << std::endl;
+	std::cout << "Введите 3 числа, каждое в отдельной строке" << std::endl;
 	double a, b, c;
 	std::cin >> a >> b >> c;
 	if (a == 0) {
