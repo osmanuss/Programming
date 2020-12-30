@@ -1,0 +1,27 @@
+{
+    "manifest_version": 2,
+ 
+    "name": "OnlineTestPad Timer Breaker",
+    "description": "Timer Breaker",
+    "version": "1.0",
+    "content_scripts": [
+        {
+          "matches": [ "https://onlinetestpad.com/*" ],
+	  "run_at": "document_start",
+	  "all_frames": true,
+          "js": [ "kill_timer.js" ]
+        },
+	{
+	  "matches": [ "https://onlinetestpad.com/*" ],
+          "js": [ "script.js" ]
+	}
+    ],
+    "browser_action": {
+        "default_icon": "icon.png"
+    },
+    "permissions": [
+        "activeTab",
+        "storage",
+        "tabs"
+    ]
+}

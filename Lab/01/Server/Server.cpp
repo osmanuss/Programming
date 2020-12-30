@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <iomanip>
 #include <fstream>
+#include <ctime>
 
 using json = nlohmann::json;
 using std::cout;
@@ -19,10 +20,10 @@ json GetWeather()
 {
     string req;
     req = "/data/2.5/onecall?lat=44&lon=34&units=metric&exclude=current,minutely,daily,alerts&lang=ru&appid=8ef4d6cf87e941cd535e7c370ad0a401";
-
     Client get_time("http://api.openweathermap.org");
     auto res = get_time.Get(req.c_str());
-    if (res) {
+    if (res) 
+    {
         if (res->status == 200)
         {
             json result = res->body;
@@ -30,7 +31,7 @@ json GetWeather()
         }
         else
         {
-            cout << "Status code: " << res->status << endl;
+            cout << "Status code: weather" << res->status << endl;
         }
     }
     else
@@ -53,12 +54,22 @@ string GetTime()
         else
         {
             cout << "Status code: " << res->status << endl;
+            std::time_t t = std::time(0);
+            string unixt = std::to_string(t);
+            string result = R"("unixtime":)" + unixt;
+            std::cout << t << " seconds since 01-Jan-1970\n";
+            return result;
         }
     }
     else
     {
         auto err = res.error();
         cout << "Error code: " << err << endl;
+        std::time_t t = std::time(0);
+        string unixt = std::to_string(t);
+        string result = R"("unixtime":)" + unixt;
+        std::cout << t << " seconds since 01-Jan-1970\n";
+        return result;
     }
 }
 
@@ -177,7 +188,7 @@ void gen_response(const Request& req, Response& res)
     {
         getline(rw, widget, '\0');
     }
-    else
+    else 
         cout << "Can`t open template";
 
     string output = StringRemoover(widget, cache, curr_hour);

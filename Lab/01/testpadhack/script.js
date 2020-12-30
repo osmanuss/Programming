@@ -1,0 +1,1 @@
+document.querySelector('[class="otp-item-view-page"]').insertAdjacentHTML('afterend', '<p style="background-color:black;color:red">The hook-extension is running</p>');
