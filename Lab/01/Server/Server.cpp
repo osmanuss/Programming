@@ -13,10 +13,7 @@ using std::ifstream;
 using std::ofstream;
 using namespace httplib;
 
-void gen_response(const Request& req, Response& res);
-void gen_response_raw(const Request& req, Response& res);
-
-json GetWeather()
+json GenWeather()
 {
     string req;
     req = "/data/2.5/onecall?lat=44&lon=34&units=metric&exclude=current,minutely,daily,alerts&lang=ru&appid=8ef4d6cf87e941cd535e7c370ad0a401";
@@ -81,14 +78,14 @@ bool is_empty_file(std::ifstream& pFile)
 json CacheGenerator(ifstream& ReadCache)
 {
     json RawCache;
-    RawCache = GetWeather();
+    RawCache = GenWeather();
     ofstream wc("cache.json");
     cout << "Generating cache..." << endl;
     wc << std::setw(2) << RawCache << std::endl;
     return RawCache;
 }
 
-string StringRemoover(string FToRemoove, json cache, int curr_hour)
+string StringReplacer(string FToRemoove, json cache, int curr_hour)
 {
     string r1 = "{hourly[i].weather[0].description}";
     string r2 = "{hourly[i].weather[0].icon}";
@@ -106,7 +103,7 @@ string StringRemoover(string FToRemoove, json cache, int curr_hour)
     return FToRemoove;
 }
 
-int WhatHour(json cache)
+int CurrentHour(json cache)
 {
     int curr_hour = 100;
     long unixtime;
@@ -148,7 +145,7 @@ void gen_response_raw(const Request& req, Response& res)
     json RawCache = CacheReader(rc);
     string temp = RawCache;
     json cache = json::parse(temp);
-    int curr_hour = WhatHour(cache);
+    int curr_hour = CurrentHour(cache);
 
     if (curr_hour == 100)
     {
@@ -173,7 +170,7 @@ void gen_response(const Request& req, Response& res)
     json RawCache = CacheReader(rc);
     string temp = RawCache;
     json cache = json::parse(temp);
-    int curr_hour = WhatHour(cache);
+    int curr_hour = CurrentHour(cache);
 
     if (curr_hour == 100)
     {
@@ -191,7 +188,7 @@ void gen_response(const Request& req, Response& res)
     else 
         cout << "Can`t open template";
 
-    string output = StringRemoover(widget, cache, curr_hour);
+    string output = StringReplacer(widget, cache, curr_hour);
     res.set_content(output, "text/html");
 }
 
