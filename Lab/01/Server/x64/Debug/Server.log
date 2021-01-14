@@ -1,4 +1,4 @@
 ﻿  Server.cpp
 D:\univer\proga\programming\Lab\01\Server\Server.cpp(159,15): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-D:\univer\proga\programming\Lab\01\Server\Server.cpp(39): warning C4715: GetWeather: значение возвращается не при всех путях выполнения
+D:\univer\proga\programming\Lab\01\Server\Server.cpp(39): warning C4715: GenWeather: значение возвращается не при всех путях выполнения
   Server.vcxproj -> D:\univer\proga\programming\Lab\01\Server\x64\Debug\Server.exe

@@ -1,135 +1,137 @@
 ﻿#include <iostream>
 #include <map>
-#include <iomanip>
 #include <string>
 #include <vector>
+#include <iomanip>
 
 using std::cin;
 using std::cout;
-using std::endl;
+using std::endl; 
+using std::vector;
 using std::setw;
 using std::string;
-using std::vector;
 
-struct Student//бедные
+struct Student
 {
     std::string name;
-    short group;
-    std::map<std::string, short> exams;
+    int group;
+    std::map<std::string, int> exams;
 };
 
-bool operator > (Student first, Student second)
+bool operator > (Student one, Student two)
 {
-    return first.name > second.name;
+    return one.name > two.name;
 }
 
-std::ostream& operator<<(std::ostream& out, vector<Student> BadLeanners)
+std::ostream& operator<<(std::ostream& push, vector<Student> Loosers)
 {
-    out << "+--------------+-------+------+------+------+------+" << endl
-        << "| Name         | Group | Math | Phys | Hist | Prog |" << endl
-        << "+--------------+-------+------+------+------+------+" << endl;
-    for (auto student : BadLeanners)
+    push << "+--------------+-------+------+------+------+------+" << endl
+        << "| Name         | Group | Math | Phys | Hist | Prog |"  << endl
+        << "+--------------+-------+------+------+------+------+"  << endl;
+    for (auto student : Loosers)
     {
-        out << "| " << student.name << setw(15 - student.name.length())
+        push << "| " << student.name << setw(15 - student.name.length())
             << "| " << student.group << setw(7)
-            << "| " << student.exams["math"] << setw(6)
-            << "| " << student.exams["phys"] << setw(6)
-            << "| " << student.exams["hist"] << setw(6)
-            << "| " << student.exams["prog"] << setw(5)
+            << "| " << student.exams["mathematics"] << setw(6)
+            << "| " << student.exams["physics"] << setw(6)
+            << "| " << student.exams["history"] << setw(6)
+            << "| " << student.exams["programming"] << setw(5)
             << "|" << endl
             << "+--------------+-------+------+------+------+------+" << endl;
     }
 
-    return out;
+    return push;
 }
 
-std::ostream& operator<<(std::ostream& out, Student BadLeanner)
+std::ostream& operator<<(std::ostream& push, Student looser)
 {
-    out << "+--------------+-------+------+------+------+------+" << endl
-        << "| Name         | Group | Math | Phys | Hist | Prog |" << endl
-        << "+--------------+-------+------+------+------+------+" << endl
-        << "| " << BadLeanner.name << setw(15 - BadLeanner.name.length())
-        << "| " << BadLeanner.group << setw(7)
-        << "| " << BadLeanner.exams["math"] << setw(6)
-        << "| " << BadLeanner.exams["phys"] << setw(6)
-        << "| " << BadLeanner.exams["hist"] << setw(6)
-        << "| " << BadLeanner.exams["prog"] << setw(5)
+    push << "+--------------+-------+------+------+------+------+" << endl
+        << "| Name         | Group | Math | Phys | Hist | Prog |"  << endl
+        << "+--------------+-------+------+------+------+------+"  << endl
+        << "| " << looser.name << setw(15 - looser.name.length())
+        << "| " << looser.group << setw(7)
+        << "| " << looser.exams["mathematics"] << setw(6)
+        << "| " << looser.exams["physics"] << setw(6)
+        << "| " << looser.exams["history"] << setw(6)
+        << "| " << looser.exams["programming"] << setw(5)
         << "|" << endl
-        << "+--------------+-------+------+------+------+------+" << endl;
+        << "+--------------+-------+------+------+------+------+"  << endl;
 
-    return out;
+    return push;
 }
 
 template <class T>
-std::vector<T> BozoSort(vector<T> arr)
+std::vector<T> BozoSort(vector<T> a)
 {
-    bool sorted = false;
-    int n = arr.size();
+    bool IfSorted = false;
+    int n = a.size();
 
-    while (!sorted)
+    while (IfSorted == 0)
     {
-        std::swap(arr[rand() % n], arr[rand() % n]);
+        std::swap(a[rand() % n], a[rand() % n]);
 
-        sorted = true;
+        IfSorted = true;
 
         for (int i = 1; i < n; i++)
         {
-            if (arr[i - 1] > arr[i])
+            if (a[i - 1.0] > a[i])
             {
-                sorted = false;
+                IfSorted = false;
                 break;
             }
         }
     }
 
-    return arr;
+    return a;
 }
 
 int main()
 {
     std::srand(time(0));
-    vector<Student> StudentsList, BadLearners;
-    StudentsList = {
-    { "Kirito",  1, { {"math", 5}, {"phys", 5}, {"hist", 5}, {"prog", 5} } },
-    { "Asuna",   1, { {"math", 5}, {"phys", 5}, {"hist", 5}, {"prog", 5} } },
-    { "Eugeo",   1, { {"math", 5}, {"phys", 5}, {"hist", 5}, {"prog", 5} } },
-    { "Sinon",   1, { {"math", 2}, {"phys", 2}, {"hist", 2}, {"prog", 2} } },
-    { "Klein",   2, { {"math", 3}, {"phys", 4}, {"hist", 2}, {"prog", 3} } },
-    { "Deathgun",3, { {"math", 5}, {"phys", 3}, {"hist", 3}, {"prog", 4} } },
-    { "Vector",  4, { {"math", 2}, {"phys", 3}, {"hist", 2}, {"prog", 3} } },
-    { "Kayaba",  5, { {"math", 3}, {"phys", 4}, {"hist", 5}, {"prog", 5} } },
-    { "Yui",     6, { {"math", 5}, {"phys", 5}, {"hist", 5}, {"prog", 3} } },
-    { "Obama",   7, { {"math", 5}, {"phys", 3}, {"hist", 3}, {"prog", 4} } } };//Черный всегда должен быть
+    vector<Student> Students, Loosers;
+    Students =
+    {
+    { "Chahmarov O",  1, { {"mathematics", 5}, {"physics", 3}, {"history", 5}, {"programming", 5} } },
+    { "Krasavec P",   1, { {"mathematics", 4}, {"physics", 4}, {"history", 5}, {"programming", 3} } },
+    { "Nekrasavec E", 1, { {"mathematics", 2}, {"physics", 2}, {"history", 2}, {"programming", 2} } },
+    { "Pushkin J",    1, { {"mathematics", 5}, {"physics", 2}, {"history", 3}, {"programming", 4} } },
+    { "Gopnik G",     2, { {"mathematics", 3}, {"physics", 4}, {"history", 2}, {"programming", 3} } },
+    { "Tolstoy L",    3, { {"mathematics", 4}, {"physics", 3}, {"history", 3}, {"programming", 4} } },
+    { "Mashina F",    4, { {"mathematics", 2}, {"physics", 5}, {"history", 2}, {"programming", 3} } },
+    { "Lobok v",      5, { {"mathematics", 3}, {"physics", 5}, {"history", 5}, {"programming", 5} } },
+    { "Kirigaya K",   6, { {"mathematics", 4}, {"physics", 3}, {"history", 5}, {"programming", 3} } },
+    { "Mochalka K",   7, { {"mathematics", 5}, {"physics", 5}, {"history", 3}, {"programming", 5} } }
+    };
 
-    short lohi = 0;
+    int two = 0;
 
-    for (auto student : StudentsList)
+    for (auto student : Students)
     {
         for (auto mark : student.exams)
         {
             if (mark.second == 2)
             {
-                lohi++;
-                BadLearners.push_back(student);
+                two++;
+                Loosers.push_back(student);
                 break;
             }
         }
     }
 
-    if (lohi == 0)
+    if (two == 0)
     {
-        cout << "Not found";//Повезло))
+        cout << "Not found";
     }
-    else if (lohi == 1)//Слабое звено
+    else if (two == 1)
     {
-        cout << BadLearners[0] << endl
+        cout << Loosers[0] << endl
             << "Expulsion\n" << endl
-            << BadLearners[0];
+            << Loosers[0];
     }
     else
     {
-        cout << BozoSort(BadLearners) << endl//Ну тут бан
+        cout << BozoSort(Loosers) << endl
             << "Expulsion\n" << endl
-            << BadLearners[rand() % BadLearners.size()];
+            << Loosers[rand() % Loosers.size()];
     }
 }

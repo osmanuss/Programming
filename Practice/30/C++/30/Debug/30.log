@@ -1,0 +1,18 @@
+﻿  30.cpp
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(64,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(69,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(74,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(79,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(84,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(89,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(94,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(99,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(104,21): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(109,21): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(114,20): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(119,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(124,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(129,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(134,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(139,19): error C7555: для использования назначенных инициализаторов требуется по крайней мере "/std:c++latest"
+D:\univer\proga\programming\Practice\30\C++\30\30.cpp(205,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных

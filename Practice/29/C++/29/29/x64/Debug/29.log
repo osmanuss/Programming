@@ -1,5 +1,6 @@
 ﻿  29.cpp
 D:\univer\proga\programming\Practice\29\C++\29\29\29.cpp(90,20): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
 D:\univer\proga\programming\Practice\29\C++\29\29\29.cpp(67,1): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-D:\univer\proga\programming\Practice\29\C++\29\29\29.cpp(131): message : выполняется компиляция ссылки на экземпляр шаблон функции "std::vector<Student,std::allocator<Student>> BozoSort<Student>(std::vector<Student,std::allocator<Student>>)"
+D:\univer\proga\programming\Practice\29\C++\29\29\29.cpp(133): message : выполняется компиляция ссылки на экземпляр шаблон функции "std::vector<Student,std::allocator<Student>> BozoSort<Student>(std::vector<Student,std::allocator<Student>>)"
+D:\univer\proga\programming\Practice\29\C++\29\29\29.cpp(77,21): warning C4244: аргумент: преобразование "double" в "const unsigned __int64", возможна потеря данных
   29.vcxproj -> D:\univer\proga\programming\Practice\29\C++\29\x64\Debug\29.exe
