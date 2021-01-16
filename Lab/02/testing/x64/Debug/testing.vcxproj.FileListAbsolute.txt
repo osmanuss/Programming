@@ -1,0 +1,2 @@
+D:\univer\proga\programming\Lab\02\testing\x64\Debug\testing.exe
+D:\univer\proga\programming\Lab\02\testing\x64\Debug\testing.pdb

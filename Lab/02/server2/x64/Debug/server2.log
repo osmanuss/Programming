@@ -1,0 +1,5 @@
+﻿  server2.cpp
+D:\univer\proga\programming\Lab\02\server2\server2.cpp(133,41): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+D:\univer\proga\programming\Lab\02\server2\server2.cpp(185,45): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+D:\univer\proga\programming\Lab\02\server2\server2.cpp(207,49): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  server2.vcxproj -> D:\univer\proga\programming\Lab\02\server2\x64\Debug\server2.exe
