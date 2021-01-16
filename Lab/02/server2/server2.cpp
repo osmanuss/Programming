@@ -29,12 +29,12 @@ json config;
 
 json openingConfig()
 {
-    ifstream config_cache("config.json");
+    ifstream cache("config.json");
     json config;
     logger << u8"Попытка открыть конфигурационный файл" << endl;
-    if (config_cache.is_open())
+    if (cache.is_open())
     {
-        config_cache >> config;
+        cache >> config;
         logger << u8"Конфигурационный файл десериализирован" << endl;
     }
     else
@@ -76,6 +76,33 @@ void gen_response(const Request& req, Response& res) {
     // Отправляем ответ
     res.set_content(str, "text/json; charset=UTF-8");
 }
+
+/*json gen_response(const string& text, const string& tts, const json& buttons, const json* current_session = nullptr, const bool end_session = false)
+{
+    json resp = {
+        {"response", {
+            {"buttons", buttons},
+            {"end_session", end_session}
+        }},
+        {"version", "1.0"}
+    };
+
+    resp["response"]["text"] = text;
+
+    if (current_session != nullptr && (*current_session)["voice_mode"] == v_speak)
+    {
+        if (tts != "")
+        {
+            resp["response"]["tts"] = tts;
+        }
+        resp["response"]["buttons"].push_back(silent_button);
+    }
+    else if (current_session != nullptr && (*current_session)["voice_mode"] == v_silent)
+    {
+        resp["response"]["buttons"].push_back(speak_button);
+    }
+    return resp;
+}*/
 
 json CacheGenerator(ifstream& ReadCache)
 {
@@ -156,14 +183,14 @@ void openWebhooks(const Request& req, Response& res)
     res.set_content(output, "text/html");
 }
 
-void save_config(json config)
+void savingConfig(json config)
 {
-    ofstream config_cache("config.json");
+    ofstream cache("config.json");
 
-    if (config_cache.is_open())
+    if (cache.is_open())
     {
-        config_cache << config.dump(4);
-        config_cache.close();
+        cache << config.dump(4);
+        cache.close();
         logger << u8"Конфигурационный файл успешно обновлён" << endl;
     }
     else
@@ -172,7 +199,7 @@ void save_config(json config)
     }
 }
 
-void webhooks_post_resp(const Request& req, Response& res)
+void webhooksPost(const Request& req, Response& res)
 {
     if (config.empty())
     {
@@ -226,17 +253,82 @@ void webhooks_post_resp(const Request& req, Response& res)
             }
         }
     }
-    save_config(config);
+    savingConfig(config);
     string output = genWebhook();
     res.set_content(output, "text/html; charset=UTF-8");
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+enum voice_mode
+{
+    v_silent,
+    v_speak
+};
+enum skill_mode
+{
+    s_help,
+    s_exit
+};
+
+json s_list = json::array();
+
+json help_buttons =
+{
+    {
+        {"title", u8"Корзина"},
+        {"hide", true}
+    },
+    {
+        {"title", u8"Молчать"},
+        {"hide", true}
+    },
+    {
+        {"title", u8"Говорить"},
+        {"hide", true}
+    },
+    {
+        {"title", u8"Сумма"},
+        {"hide", true}
+    },
+    {
+        {"title", u8"Покупка завершена"},
+        {"hide", true}
+    },
+    {
+        {"title", u8"Выход"},
+        {"hide", true}
+    }
+};
+
+json silent_button =
+{
+    {"title", u8"Молчать"},
+    {"hide", true}
+};
+
+json speak_button =
+{
+    {"title", u8"Говорить"},
+    {"hide", true}
+};
+
+json go_help_button =
+{
+    {
+        {"title", u8"Помощь"},
+        {"hide", true}
+    }
+};
+
+
 
 int main() {
     Server svr;                            // Создаём сервер (пока-что не запущен)
     svr.Get("/webhooks", openWebhooks);
     svr.Post("/", gen_response);           // Вызвать функцию gen_response на post запро
-    svr.Post("/webhooks", webhooks_post_resp);
-    std::cout << "Start server... OK\n"; // cout использовать нельзя
+    svr.Post("/webhooks", webhooksPost);
+    logger << u8"Сервер успешно запущен" << endl;
     svr.listen("localhost", 1234);         // Запускаем сервер на localhost и порту 1234
     ifstream rc("webhooks.json"); //Открываем файл json 
     json RawCache = CacheReader(rc); //Запускаем функцию его читателя
