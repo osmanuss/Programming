@@ -13,15 +13,6 @@ using json = nlohmann::json;
 using std::endl;
 const string webList = "{webhooks_list}";
 const string urlka = "{Webhook URL}";
-const string templateForWebhook = u8R"(
-<div class="form-row align-items-center">
-    <div class="col">
-        <input type="text" value="{Webhook URL}" class="form-control mb-2" disabled>
-    </div>
-    <div class="col">
-        <button type="submit" name="del" value="{Webhook URL}" class="btn btn-danger mb-2">Удалить</button>
-    </div>
-</div>)";
 
 json config;
 
@@ -113,6 +104,16 @@ string genWebhook()
 {
     string webhooks_template, Webhooks;
     ifstream webhooks_cache("webhooks_template.html");
+
+	const string templateForWebhook = u8R"(
+<div class="form-row align-items-center">
+    <div class="col">
+        <input type="text" value="{Webhook URL}" class="form-control mb-2" disabled>
+    </div>
+    <div class="col">
+        <button type="submit" name="del" value="{Webhook URL}" class="btn btn-danger mb-2">Удалить</button>
+    </div>
+</div>)";
 
     if (webhooks_cache.is_open())
     {
@@ -274,24 +275,24 @@ json help_buttons =
     }
 };
 
-json silent_button =
-{
-    {"title", u8"Молчать"},
-    {"hide", true}
-};
-
-json speak_button =
-{
-    {"title", u8"Говорить"},
-    {"hide", true}
-};
-
 json go_help_button =
 {
     {
         {"title", u8"Помощь"},
         {"hide", true}
     }
+};
+
+json silent_button =
+{
+	{"title", u8"Молчать"},
+	{"hide", true}
+};
+
+json speak_button =
+{
+	{"title", u8"Говорить"},
+	{"hide", true}
 };
 
 json responseForArmeel(const string& text, const string& tts, const json& buttons, const json* current_session = nullptr, const bool end_session = false)
@@ -380,6 +381,7 @@ void Armeel(const Request& req, Response& res)
 	}
 
 	string command = request["request"]["command"];
+	json response;
 	if ((*current_session)["skill_mode"] == s_help)
 	{
 		if (command == u8"корзина")
@@ -395,25 +397,33 @@ void Armeel(const Request& req, Response& res)
 				Просматривайте список покупок командой "Список"
 				Очищайте корзину командой "Очистить корзину")";
 		}
-		else if (command == u8"молчать")
-		{
-			txt = u8"Отключение голосовой озвучки всех моих сообщений";
-			tts = u8"Отключение голосовой озвучки всех моих сообщений";
-		}
 		else if (command == u8"говорить")
 		{
-			txt = u8"Включение голосовой озвучки всех моих сообщений";
-			tts = u8"Включение голосовой озвучки всех моих сообщений";
+			txt = u8R"(Это включение голоса
+				       О чем еще рассказать?)";
+			tts = u8R"(Это включение голоса
+				       О чем еще рассказать?)";
 		}
-		else if (command == u8"сумма")
+		else if (command == u8"молчать")
 		{
-			txt = u8"Подсчёт и отображение стоимости всех товаров в корзине";
-			tts = u8"Подсчёт и отображение стоимости всех товаров в корзине";
+			txt = u8R"(Это отключение голоса
+				     О чем еще рассказать?)";
+			tts = u8R"(Это оключение голоса
+					 О чем еще рассказать?)";
 		}
 		else if (command == u8"покупка завершена")
 		{
-			txt = u8"Передача данных о покупке для сохранения в эксель и очистка корзины";
-			tts = u8"Передача данных о покупке для сохранения в эксель и очистка корзины";
+			txt = u8R"(Это передача данных в эксель и очистка корзины
+					   О чем еще рассказать?)";
+			tts = u8R"(Это передача данных в эксель и очистка корзины
+					   О чем еще рассказать?)";
+		}
+		else if (command == u8"сумма")
+		{
+			txt = u8R"(Это подсчёт суммы всех товаров в корзине
+					   О чем еще рассказать?)";
+			tts = u8R"(Это подсчёт суммы всех товаров в корзине
+					   О чем еще рассказать?)";
 		}
 		else if (command == u8"выход")
 		{
@@ -426,8 +436,6 @@ void Armeel(const Request& req, Response& res)
 			txt = u8"Неизвестная команда";
 			tts = u8"Неизвестная команда";
 		}
-
-		json response;
 		if ((*current_session)["skill_mode"] == s_help)
 		{
 			response = responseForArmeel(txt, tts, help_buttons, current_session);
@@ -436,6 +444,8 @@ void Armeel(const Request& req, Response& res)
 		{
 			response = responseForArmeel(txt, tts, go_help_button, current_session);
 		}
+		txt = u8"О чем еще рассказать?";
+		tts = u8"О чем еще рассказать?";
 		res.set_content(response.dump(2), "text/json; charset=UTF-8");
 	}
 	else
@@ -447,15 +457,15 @@ void Armeel(const Request& req, Response& res)
 					 Корзина - наше новейшее изобретение для помощи с покупками. Ради нее и был сделан навык.
 					 Покупка завершена - сохранение данных и очистка корзины.
 					 Сумма - подсчёт стоимости всех товаров, лежащих в корзине.
-					 Можете ввести название комманды для более подробного описания
-					 Выйти из помощи можно при помощи команды "Выход")";
+					 Выйти из помощи можно при помощи команды "Выход"
+					 О чём рассказать подробнее?)";
 			string tts =
 				u8R"(Говорить/молчать - включает/отключает озвучивание текста Великим Эрмилем.
 					 Корзина - наше новейшее изобретение для помощи с покупками. Ради нее и был сделан навык.
 					 Покупка завершена - сохранение данных и очистка корзины.
 					 Сумма - подсчёт стоимости всех товаров, лежащих в корзине.
-					 Можете ввести название комманды для более подробного описания
-					 Выйти из помощи можно при помощи команды "Выход")";
+					 Выйти из помощи можно при помощи команды "Выход"
+					 О чём рассказать подробнее?)";
 			json response = responseForArmeel(txt, tts, help_buttons, current_session);
 			(*current_session)["skill_mode"] = s_help;
 			res.set_content(response.dump(2), "text/json; charset=UTF-8");
@@ -604,7 +614,7 @@ void Armeel(const Request& req, Response& res)
 			}
 			else
 			{
-				txt = u8"Товары в корзине:";
+				txt = u8"В корзине:";
 				for (auto& elem : (*current_session)["check"])
 				{
 					int price = elem["price"].get<int>();
@@ -638,14 +648,46 @@ void Armeel(const Request& req, Response& res)
 			json response = responseForArmeel(txt, tts, go_help_button, current_session);
 			res.set_content(response.dump(2), "text/json; charset=UTF-8");
 		}
-		else if (command == "сумма")
+		else if (command == u8"сумма")
 		{
-		
+			string txt = "";
+			string tts = "";
+
+			size_t size = request["request"]["nlu"]["tokens"].size();
+			int sum = 0;
+			for (auto& cart_item : (*current_session)["check"])
+			{
+				sum += cart_item["price"].get<int>();
+			}
+			txt = u8"В корзине товаров на " + std::to_string(sum);
+			tts = u8"В корзине товаров на " + std::to_string(sum);
+			if (sum % 10 == 0)
+			{
+				txt += u8" рублей";
+				tts += u8" рублей";
+			}
+			else if (sum % 10 == 1)
+			{
+				txt += u8" рубль";
+				tts += u8" рубль";
+			}
+			else if (sum % 10 < 5 && sum % 10 > 0)
+			{
+				txt += u8" рубля";
+				tts += u8" рубля";
+			}
+			else
+			{
+				txt += u8" рублей";
+				tts += u8" рублей";
+			}
+			json response = responseForArmeel(txt, tts, go_help_button, current_session);
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
 		}
 		else if (command == u8"покупка завершена")
 		{
-			string txt = u8"Формирую список покупок для сохранения в эксель...";
-			string tts = u8"Формирую список покупок для сохранения в эксель...";
+			string txt = u8"Создаю список";
+			string tts = u8"Создаю список";
 			json output, conf;
 			output["user_id"] = user_id;
 			output["check"] = (*current_session)["check"];
