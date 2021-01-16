@@ -160,7 +160,7 @@ def create_info(canvas):
         local_width,
         local_height,
         anchor=NW,
-        text='Lines 2: Electric Boogaloo',
+        text='Линии',
         font=text_font,
         fill=text_color)
 
