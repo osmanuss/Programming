@@ -23,9 +23,9 @@ const string templateForWebhook = u8R"(
     </div>
 </div>)";
 
-ofstream logger("log.txt");
-
 json config;
+
+ofstream logger("log.txt");
 
 json openingConfig()
 {
@@ -76,33 +76,6 @@ void gen_response(const Request& req, Response& res) {
     // Отправляем ответ
     res.set_content(str, "text/json; charset=UTF-8");
 }
-
-/*json gen_response(const string& text, const string& tts, const json& buttons, const json* current_session = nullptr, const bool end_session = false)
-{
-    json resp = {
-        {"response", {
-            {"buttons", buttons},
-            {"end_session", end_session}
-        }},
-        {"version", "1.0"}
-    };
-
-    resp["response"]["text"] = text;
-
-    if (current_session != nullptr && (*current_session)["voice_mode"] == v_speak)
-    {
-        if (tts != "")
-        {
-            resp["response"]["tts"] = tts;
-        }
-        resp["response"]["buttons"].push_back(silent_button);
-    }
-    else if (current_session != nullptr && (*current_session)["voice_mode"] == v_silent)
-    {
-        resp["response"]["buttons"].push_back(speak_button);
-    }
-    return resp;
-}*/
 
 json CacheGenerator(ifstream& ReadCache)
 {
@@ -321,14 +294,394 @@ json go_help_button =
     }
 };
 
+json responseForArmeel(const string& text, const string& tts, const json& buttons, const json* current_session = nullptr, const bool end_session = false)
+{
+	json resp = {
+		{"response", {
+			{"buttons", buttons},
+			{"end_session", end_session}
+		}},
+		{"version", "1.0"}
+	};
+	if (text != "")
+	{
+		resp["response"]["text"] = text;
+	}
+	if (current_session != nullptr && (*current_session)["voice_mode"] == v_speak)
+	{
+		if (tts != "")
+		{
+			resp["response"]["tts"] = tts;
+		}
+		resp["response"]["buttons"].push_back(silent_button);
+	}
+	else if (current_session != nullptr && (*current_session)["voice_mode"] == v_silent)
+	{
+		resp["response"]["buttons"].push_back(speak_button);
+	}
+	return resp;
+}
 
+void Armeel(const Request& req, Response& res)
+{
+	json request = json::parse(req.body);
+
+	string user_id = request["session"]["application"]["application_id"];
+	json resp;
+	json* current_session = nullptr;
+
+	for (auto& session : s_list)
+	{
+		if (session["user_id"] == user_id)
+		{
+			current_session = &session;
+			break;
+		}
+	}
+
+	string txt, tts;
+	/// <summary>
+	/// //////////////////////////////////////////////////////////////////////////////////////////////
+	/// </summary>
+	/// <param name="req"></param>
+	/// <param name="res"></param>
+	if (request["session"]["new"].get<bool>())
+	{
+		if (current_session == nullptr)
+		{
+			json session;
+			session["user_id"] = user_id;
+			session["skill_mode"] = s_exit;
+			session["voice_mode"] = v_speak;
+			session["korzina"] = json::array();
+
+			s_list.push_back(session);
+			current_session = &s_list[s_list.size() - 1];
+		}
+		else
+		{
+			(*current_session)["skill_mode"] = s_exit;
+			(*current_session)["voice_mode"] = v_speak;
+		}
+		txt = u8"Здравствуйте! Я помогу вам с покупками.";
+		tts = u8"Здравствуйте! Я помогу вам с покупками.";
+		json response = responseForArmeel(txt, tts, go_help_button, current_session);
+		res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		return;
+	}
+
+	if (current_session == nullptr)
+	{
+		txt = u8"Произошла ошибка";
+		tts = u8"Произошла ошибка";
+		json response = responseForArmeel(txt, tts, go_help_button, current_session);
+		res.set_content(resp.dump(2), "text/json; charset=UTF-8");
+		return;
+	}
+
+	string command = request["request"]["command"];
+	if ((*current_session)["skill_mode"] == s_help)
+	{
+		if (command == u8"корзина")
+		{
+			txt = u8R"(Добавляйте товары в корзину командой 
+				"Добавить в корзину <название товара и цена>",
+				удаляйте из корзины командой "Удалить из корзины <название товара>"
+				Просматривайте список покупок командой "Список"
+				Очищайте корзину командой "Очистить корзину")";
+			tts = u8R"(Добавляйте товары в корзину командой 
+				"Добавить в корзину <название товара и цена>",
+				удаляйте из корзины командой "Удалить из корзины <название товара>"
+				Просматривайте список покупок командой "Список"
+				Очищайте корзину командой "Очистить корзину")";
+		}
+		else if (command == u8"молчать")
+		{
+			txt = u8"Отключение голосовой озвучки всех моих сообщений";
+			tts = u8"Отключение голосовой озвучки всех моих сообщений";
+		}
+		else if (command == u8"говорить")
+		{
+			txt = u8"Включение голосовой озвучки всех моих сообщений";
+			tts = u8"Включение голосовой озвучки всех моих сообщений";
+		}
+		else if (command == u8"сумма")
+		{
+			txt = u8"Подсчёт и отображение стоимости всех товаров в корзине";
+			tts = u8"Подсчёт и отображение стоимости всех товаров в корзине";
+		}
+		else if (command == u8"покупка завершена")
+		{
+			txt = u8"Передача данных о покупке для сохранения в эксель и очистка корзины";
+			tts = u8"Передача данных о покупке для сохранения в эксель и очистка корзины";
+		}
+		else if (command == u8"выход")
+		{
+			txt = u8"Выход из режима помощи";
+			tts = u8"Выход из режима помощи";
+			(*current_session)["skill_mode"] = s_exit;
+		}
+		else
+		{
+			txt = u8"Неизвестная команда";
+			tts = u8"Неизвестная команда";
+		}
+
+		json response;
+		if ((*current_session)["skill_mode"] == s_help)
+		{
+			response = responseForArmeel(txt, tts, help_buttons, current_session);
+		}
+		else
+		{
+			response = responseForArmeel(txt, tts, go_help_button, current_session);
+		}
+		res.set_content(response.dump(2), "text/json; charset=UTF-8");
+	}
+	else
+	{
+		if (command == u8"помощь")
+		{
+			string txt =
+				u8R"(Говорить/молчать - включает/отключает озвучивание текста Великим Эрмилем.
+					 Корзина - наше новейшее изобретение для помощи с покупками. Ради нее и был сделан навык.
+					 Покупка завершена - сохранение данных и очистка корзины.
+					 Сумма - подсчёт стоимости всех товаров, лежащих в корзине.
+					 Можете ввести название комманды для более подробного описания
+					 Выйти из помощи можно при помощи команды "Выход")";
+			string tts =
+				u8R"(Говорить/молчать - включает/отключает озвучивание текста Великим Эрмилем.
+					 Корзина - наше новейшее изобретение для помощи с покупками. Ради нее и был сделан навык.
+					 Покупка завершена - сохранение данных и очистка корзины.
+					 Сумма - подсчёт стоимости всех товаров, лежащих в корзине.
+					 Можете ввести название комманды для более подробного описания
+					 Выйти из помощи можно при помощи команды "Выход")";
+			json response = responseForArmeel(txt, tts, help_buttons, current_session);
+			(*current_session)["skill_mode"] = s_help;
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		}
+		else if (command == u8"молчать")
+		{
+			string txt = u8"Молчу, молчу";
+			string tts;
+			(*current_session)["voice_mode"] = v_silent;
+			json response = responseForArmeel(txt, tts, go_help_button, current_session);
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		}
+		else if (command == u8"говорить")
+		{
+			string txt = u8"Хорошо";
+			string tts = u8"Хорошо";
+			(*current_session)["voice_mode"] = v_speak;
+			json response = responseForArmeel(txt, tts, go_help_button, current_session);
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		}
+		else if (command.find(u8"добавить в корзину") == 0)
+		{
+			size_t size = request["request"]["nlu"]["tokens"].size();
+			string txt = u8"ОК";
+			string tts = u8"ОК";
+			string item_name;
+			int item_price = 0, num_index = 0;
+			bool set_price = false;
+
+			for (auto ent : request["request"]["nlu"]["entities"])
+			{
+				if (ent["type"].get<string>() == "YANDEX.NUMBER")
+				{
+					num_index = ent["tokens"]["start"];
+					int val = ent["value"];
+					if (val <= 0)
+					{
+						txt = u8"Если цена меньше рубля, то это уже не покупка, а подарок, наша корзина только для покупок";
+						tts = u8"Если цена меньше рубля, то это уже не покупка, а подарок, наша корзина только для покупок";
+					}
+					else
+					{
+						item_price = val;
+					}
+					set_price = true;
+					break;
+				}
+			}
+			if (size == 3)
+			{
+				txt = u8"Вы не указали что добавлять";
+				tts = u8"Вы не указали что добавлять";
+			}
+			else if (num_index == 3)
+			{
+				txt = u8"Вы не указали название товара";
+				tts = u8"Вы не указали название товара";
+			}
+			else if (!set_price)
+			{
+				txt = u8"Вы не указали цену";
+				tts = u8"Вы не указали цену";
+			}
+			else
+			{
+				for (int i = 3; i < num_index; ++i)
+				{
+					item_name += request["request"]["nlu"]["tokens"][i].get<string>();
+					item_name += " ";
+				}
+				item_name.pop_back();
+				json item = {
+					{"item",  item_name},
+					{"price", item_price}
+				};
+				(*current_session)["check"].push_back(item);
+			}
+
+			json response = responseForArmeel(txt, tts, go_help_button, current_session);
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		}
+		else if (command.find(u8"удалить из корзины") == 0)
+		{
+			size_t size = request["request"]["nlu"]["tokens"].size();
+
+			string txt;
+			string tts;
+			string name = "";
+
+			for (int i = 3; i < size; ++i)
+			{
+				name += request["request"]["nlu"]["tokens"][i].get<string>();
+				name += " ";
+			}
+			bool found = false;
+			int	item_index = 0;
+
+			if (name == "")
+			{
+				txt = u8"Вы не указали название товара";
+				tts = u8"Вы не указали название товара";
+			}
+			else
+			{
+				name.pop_back();
+				for (auto& cart_item : (*current_session)["check"])
+				{
+					if (cart_item["item"].get<string>() == name)
+					{
+						found = true;
+						break;
+					}
+					++item_index;
+				}
+				if (!found)
+				{
+					txt = u8"Товар не в корзине";
+					tts = u8"Товар не в корзине";
+				}
+				else
+				{
+					txt = u8"Товар удалён";
+					tts = u8"Товар удалён";
+					(*current_session)["check"].erase((*current_session)["check"].begin() + item_index);
+				}
+			}
+			json response = responseForArmeel(txt, tts, go_help_button, current_session);
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		}
+		else if (command == u8"очистить корзину")
+		{
+			string txt = u8"Корзина очищена";
+			string tts = u8"Корзина очищена";
+			json response = responseForArmeel(txt, tts, go_help_button, current_session);
+			(*current_session).erase("check");
+			(*current_session)["check"] = json::array();
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		}
+		else if (command == u8"что в корзине")
+		{
+			string txt, tts;
+			if ((*current_session)["check"].empty())
+			{
+				txt = u8"В корзине ничего нет";
+				tts = u8"В корзине ничего нет";
+			}
+			else
+			{
+				txt = u8"Товары в корзине:";
+				for (auto& elem : (*current_session)["check"])
+				{
+					int price = elem["price"].get<int>();
+
+					txt += "\n"
+						+ elem["item"].get<string>()
+						+ u8" - "
+						+ std::to_string(price);
+
+					if (price % 10 == 0)
+					{
+						txt += u8" рублей,";
+					}
+					else if (price % 10 == 1)
+					{
+						txt += u8" рубль,";
+					}
+					else if (price % 10 < 5 && price % 10 > 0)
+					{
+						txt += u8" рубля,";
+					}
+					else
+					{
+						txt += u8" рублей,";
+					}
+				}
+				txt.pop_back();
+				tts = txt;
+			}
+
+			json response = responseForArmeel(txt, tts, go_help_button, current_session);
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		}
+		else if (command == "сумма")
+		{
+		
+		}
+		else if (command == u8"покупка завершена")
+		{
+			string txt = u8"Формирую список покупок для сохранения в эксель...";
+			string tts = u8"Формирую список покупок для сохранения в эксель...";
+			json output, conf;
+			output["user_id"] = user_id;
+			output["check"] = (*current_session)["check"];
+			conf = openingConfig();
+
+			for (string link : conf["webhooks"])
+			{
+				int ind = link.find('/', static_cast<string>("https://").size());
+				Client cli(link.substr(0, ind).c_str());
+				cli.Post(link.substr(ind, -1).c_str(), output.dump(2), "application/json; charset=UTF-8");
+			}
+
+			(*current_session).erase("check");
+			(*current_session)["check"] = json::array();
+
+			json response = responseForArmeel(txt, tts, go_help_button, current_session);
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		}
+		else
+		{
+			string txt = u8"Неизвестная команда";
+			string tts = u8"Неизвестная команда";
+
+			json response = responseForArmeel(txt, tts, go_help_button, current_session);
+			res.set_content(response.dump(2), "text/json; charset=UTF-8");
+		}
+	}
+}
 
 int main() {
     Server svr;                            // Создаём сервер (пока-что не запущен)
     svr.Get("/webhooks", openWebhooks);
-    svr.Post("/", gen_response);           // Вызвать функцию gen_response на post запро
+    svr.Post("/", Armeel);           // Вызвать функцию gen_response на post запро
     svr.Post("/webhooks", webhooksPost);
     logger << u8"Сервер успешно запущен" << endl;
+    cout << "OK" << endl;
     svr.listen("localhost", 1234);         // Запускаем сервер на localhost и порту 1234
     ifstream rc("webhooks.json"); //Открываем файл json 
     json RawCache = CacheReader(rc); //Запускаем функцию его читателя
