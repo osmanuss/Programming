@@ -1,254 +1,262 @@
-﻿#include <iostream>
+﻿#include <algorithm>
+#include <iostream>
 #include <vector>
-#include <string>
+#include <unordered_map>
 #include <cstdlib>
 #include <ctime>
+#include <cctype>
 
-enum ItemType 
+enum class ItemType
 {
-    COIN,
-    RUNE,
-    WEAPON,
-    ARMOR
+	COIN,
+	RUNE,
+	WEAPON,
+	ARMOR
 };
 
-struct Coin 
+struct Coin
 {
-    int count;
+	size_t count;
 };
 
-enum Element 
+enum class Element
 {
-    FIRE,
-    WATER,
-    EARTH,
-    AIR
+	FIRE,
+	WATER,
+	EARTH,
+	AIR
 };
 
-struct Rune 
+struct Rune
 {
-    int level;
-    Element element;
+	Element element;
+	size_t level;
 };
 
-struct Weapon 
+struct Weapon
 {
-    int damage;
-    int critical;
-    int durability;
+	size_t damage;
+	size_t critical;
+	size_t durability;
 };
 
-struct Armor 
+struct Armor
 {
-    int guard;
-    int durability;
+	size_t guard;
+	size_t durability;
 };
 
-struct Item 
+union Union
 {
-    ItemType type;
-    union {
-        Coin coin;
-        Rune rune;
-        Weapon weapon;
-        Armor armor;
-    } item;
+	Coin coin;
+	Rune rune;
+	Weapon weapon;
+	Armor armor;
+
+	Union(const Coin& coin)
+	{
+		this->coin = coin;
+	}
+
+	Union(const Rune& rune)
+	{
+		this->rune = rune;
+	}
+
+	Union(const Weapon& weapon)
+	{
+		this->weapon = weapon;
+	}
+
+	Union(const Armor& armor)
+	{
+		this->armor = armor;
+	}
 };
 
-Item randomItem(int num)
+struct Item
 {
-    switch (num)
-    {
-    case 1:
-        return Item{
-           RUNE, {.rune = { 10, FIRE }}
-        };
-        break;
-    case 2:
-        return Item{
-           RUNE, {.rune = { 10, EARTH }}
-        };
-        break;
-    case 3:
-        return Item{
-           RUNE, {.rune = { 10, WATER }}
-        };
-        break;
-    case 4:
-        return Item{
-           RUNE, {.rune = { 10, AIR }}
-        };
-        break;
-    case 5:
-        return Item{
-           RUNE, {.rune = { 5, FIRE }}
-        };
-        break;
-    case 6:
-        return Item{
-           RUNE, {.rune = { 5, EARTH }}
-        };
-        break;
-    case 7:
-        return Item{
-           RUNE, {.rune = { 5, WATER }}
-        };
-        break;
-    case 8:
-        return Item{
-           RUNE, {.rune = { 5, AIR }}
-        };
-        break;
-    case 9:
-        return Item{
-           WEAPON, {.weapon = { 100, 0, 100 }}
-        };
-        break;
-    case 10:
-        return Item{
-           WEAPON, {.weapon = { 75, 50, 100 }}
-        };
-        break;
-    case 11:
-        return Item{
-           ARMOR, {.armor = { 50, 100 }}
-        };
-        break;
-    case 12:
-        return Item{
-           RUNE, {.rune = { 1, FIRE }}
-        };
-        break;
-    case 13:
-        return Item{
-           RUNE, {.rune = { 1, EARTH }}
-        };
-        break;
-    case 14:
-        return Item{
-           RUNE, {.rune = { 1, WATER }}
-        };
-        break;
-    case 15:
-        return Item{
-           RUNE, {.rune = { 1, AIR }}
-        };
-        break;
-    case 16:
-        return Item{
-           COIN, {.coin = { 1000 }}
-        };
-        break;
-    default:
-        break;
-    }
+	ItemType type;
+
+	Union value;
+
+	static Item GetCoin(const unsigned int count)
+	{
+		return {
+			Item{
+				ItemType::COIN,
+				Union{Coin{count}}
+			}
+		};
+	}
+
+	static Item GetRune(const Element element, const size_t level)
+	{
+		return
+		{
+			Item{
+				ItemType::RUNE,
+				Union{Rune{element, level}}
+			}
+		};
+	}
+
+	static Item GetWeapon(const unsigned int damage, const size_t critical, const size_t durability)
+	{
+		return {
+			Item{
+				ItemType::WEAPON,
+				Union{Weapon{damage, critical, durability}}
+			}
+		};
+	}
+
+	static Item GetArmor(const unsigned int guard, const size_t durability)
+	{
+		return {
+			Item{
+				ItemType::ARMOR,
+				Union{Armor{guard, durability}}
+			}
+		};
+	}
+
+	Item& operator++()
+	{
+		return *this;
+	}
+};
+
+std::string write(Rune& rune)
+{
+	std::string result;
+
+	switch (rune.element)
+	{
+	case Element::FIRE:
+		return "fire";
+	case Element::WATER:
+		return "water";
+	case Element::EARTH:
+		return "earth";
+	case Element::AIR:
+		return "air";
+	}
 }
 
-std::ostream& operator << (std::ostream& out, Item item)
+std::ostream& operator <<(std::ostream& out, const Item& item)
 {
-    std::string FullItemName;
-    switch (item.type)
-    {
-    case COIN:
-        FullItemName = "1000 gold";
-        break;
-    case RUNE:
-        FullItemName = "Rune of ";
-        switch (item.item.rune.element)
-        {
-        case FIRE:
-            FullItemName += "fire";
-            break;
-        case EARTH:
-            FullItemName += "earth";
-            break;
-        case WATER:
-            FullItemName += "water";
-            break;
-        case AIR:
-            FullItemName += "air";
-            break;
-        }
-        FullItemName += " " + std::to_string(item.item.rune.level) + " lvl";
-        break;
-    case WEAPON:
-        if (item.item.weapon.critical == 0)
-        {
-            FullItemName = "Weapon God Killer";
-        }
-        else if (item.item.weapon.critical == 50)
-        {
-            FullItemName = "Weapon Demon Slayer";
-        }
-        break;
-    case ARMOR:
-        FullItemName = "Bronezhiletka";
-        break;
-    }
+	const ItemType type = item.type;
 
-    return out << FullItemName;
+	if (type == ItemType::COIN)
+	{
+		out << item.value.coin.count << " gold" << std::endl;
+	}
+	if (type == ItemType::RUNE)
+	{
+		Rune rune = item.value.rune;
+		out << "Rune of " << write(rune) << " " << rune.level << " lvl" << std::endl;
+	}
+	if (type == ItemType::WEAPON)
+	{
+		Weapon weapon = item.value.weapon;
+		if (weapon.damage == 100)
+		{
+			out << "God Killer" << std::endl;
+		}
+		else
+		{
+			out << "Demon Slayer" << std::endl;
+		}
+	}
+	if (type == ItemType::ARMOR)
+	{
+		const Armor armor = item.value.armor;
+		out << "bronezhiletka" << std::endl;
+	}
+	return out;
 }
 
 using LootBox = std::vector<Item>;
-using std::endl;
 
-std::ostream& operator << (std::ostream& out, LootBox Box)
+std::ostream& operator <<(std::ostream& out, const LootBox& box)
 {
-    return out << Box[0] << endl << Box[1] << endl << Box[2] << endl;
+	for (const Item& item : box)
+	{
+		out << item;
+	}
+
+	return out << std::flush;
 }
 
-std::vector<double> chances{ 0.06, 0.07, 0.13, 0.14, 0.6, 0.7, 1.3, 1.4, 1.4, 1.4, 2.8, 6.0, 7.0, 13.0, 14.0, 50.0 };
+LootBox& operator<<(LootBox& box, Item& item)
+{
+	box.push_back(item);
+	return box;
+}
+
+std::vector<std::pair<Item, double>> treasure
+{
+	{Item::GetCoin(1000), 50.0},
+	{Item::GetRune(Element::FIRE, 1), 6.0},
+	{Item::GetRune(Element::WATER, 1), 13.0},
+	{Item::GetRune(Element::EARTH, 1), 7.0},
+	{Item::GetRune(Element::AIR, 1), 14.0},
+	{Item::GetRune(Element::FIRE, 5), 0.6},
+	{Item::GetRune(Element::WATER, 5), 1.3},
+	{Item::GetRune(Element::EARTH, 5), 0.7},
+	{Item::GetRune(Element::AIR, 5), 1.4},
+	{Item::GetRune(Element::FIRE, 5), 0.06},
+	{Item::GetRune(Element::WATER, 5), 0.13},
+	{Item::GetRune(Element::EARTH, 5), 0.07},
+	{Item::GetRune(Element::AIR, 5), 0.14},
+	{Item::GetWeapon(100, 0, 100), 1.4},
+	{Item::GetWeapon(75, 50, 100), 1.4},
+	{Item::GetArmor(50, 100), 2.8},
+};
 
 LootBox generateLootBox()
 {
-    LootBox Box;
-    srand(time(0));
+	LootBox box;
+	std::srand(std::time(nullptr));
 
-    for (int i = 0; i < 3; ++i)
-    {
-        double random = (rand() % 10000) / 100;
-        double sum = 0;
-        short num = 0;
+	for (int i = 0; i < 3; ++i)
+	{
+		const double random = static_cast<double>(rand() % 10000) / 100;
+		double sum = 0;
 
-        for (auto chance : chances)
-        {
-            ++num;
-            if (sum <= random and random < sum + chance)
-            {
-                Item item = randomItem(num);
-                Box.push_back(item);
-                break;
-            }
+		for (const auto& item : treasure)
+		{
+			if (sum <= random && random < sum + item.second)
+			{
+				box.push_back(item.first);
+				break;
+			}
 
-            sum += chance;
-        }
-    }
+			sum += item.second;
+		}
+	}
 
-    return Box;
+	return box;
 }
-
-using std::cin;
-using std::cout;
 
 int main()
 {
-    setlocale(LC_ALL, "Russ");
-    while (true)
-    {
-        std::string otvet;
-        cout << "Открыть лутбокс? Yes/No" << std::endl;
-        cin >> otvet;
-        if (otvet == "Y" or otvet == "Yes" or otvet == "y" or otvet == "yes")
-        {
-            cout << generateLootBox();
-        }
-        else if (otvet == "N" or otvet == "No" or otvet == "n" or otvet == "no")
-        {
-            break;
-        }
-        else
-        {
-            continue;
-        }
-    }
-}
+	setlocale(LC_ALL, "Russian");
+
+	while (true)
+	{
+		std::string answer;
+		std::cout << "Открыть лутбокс? Yes/No" << std::endl;
+		std::cin >> answer;
+
+		if (answer == "y" or answer == "Y" or answer == "yes" or answer == "Yes")
+		{
+			std::cout << generateLootBox();
+		}
+		else if (answer == "n" or answer == "N" or answer == "no" or answer == "No")
+		{
+			break;
+		}
+	}
+};
