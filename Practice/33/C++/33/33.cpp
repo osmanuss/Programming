@@ -11,10 +11,9 @@ int main()
     int len, x0, c;
     x0 = 0;
     c = 0;
-    setlocale(LC_ALL, "rus");
-    cout << "Введите длину массива, и два числа: начальный член и шаг арифметической прогрессии" << endl;
+    cout << "Input: " << endl;
     cin >> len >> x0 >> c;
-    int *arr = create(len, x0, c);
+    int* arr = create(len, x0, c);
     sort(arr, len);
     print(arr, len);
     delete[] arr;
