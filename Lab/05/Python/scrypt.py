@@ -127,7 +127,7 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-#        self.ui.message_frame.textChanged.connect(self.message_changed)
+        self.ui.plainTextEdit.textChanged.connect(self.msgChanged)
         self.ui.load_button.clicked.connect(self.loadImage)
         self.ui.save_button.clicked.connect(self.saveImage)
         self.ui.code_button.clicked.connect(self.encodeMsg)
@@ -164,14 +164,14 @@ class MainWindow(QMainWindow):
             self.ui.label.setText("Ошибка. Недостаточно места!")
             return
             
-        byte_array = QByteArray()
-        byte_array.push_back(self.ui.plainTextEdit.toPlainText().encode())
+        byteArray = QByteArray()
+        byteArray.push_back(self.ui.plainTextEdit.toPlainText().encode())
         for i in range(4):
-            byte_array.push_front(bytes(((self.used >> i * 8) & 0xff,)))
+            byteArray.push_front(bytes(((self.used >> i * 8) & 0xff,)))
         for i in range(len(MainWindow.serdechko) - 1, -1, -1):
-            byte_array.push_front(bytes((MainWindow.serdechko[i],)))
+            byteArray.push_front(bytes((MainWindow.serdechko[i],)))
 
-        write_bytes(self.image, byte_array, 0)
+        write_byte(self.image, byteArray, 0)
 
         self.ui.label.setText("Сообщение добавлено в картинку!")
 
@@ -179,22 +179,35 @@ class MainWindow(QMainWindow):
     def decodeMsg(self):
 
         header_size = len(self.serdechko) + 4
-        byte_array = read_bytes(self.image, 0, header_size)
+        byteArray = read_byte(self.image, 0, header_size)
 
         for i in range(0, len(self.serdechko)):
-            if bytes((self.serdechko[i],)) != byte_array[i]:
+            if bytes((self.serdechko[i],)) != byteArray[i]:
                 self.ui.label.setText("Сообщение не обнаружено")
                 return
 
         msgSize = 0
         for i in range(len(self.serdechko), len(self.serdechko) + 4):
-            msgSize = (msgSize << 8) + int.from_bytes(byte_array[i], "big")
-        byte_array.clear()
-        byte_array = read_bytes(self.image, header_size, msgSize)
+            msgSize = (msgSize << 8) + int.from_bytes(byteArray[i], "big")
+        byteArray.clear()
+        byteArray = read_byte(self.image, header_size, msgSize)
 
-        self.ui.plainTextEdit.setText(bytes(byte_array).decode("utf-8"))
+        self.ui.plainTextEdit.setText(bytes(byteArray).decode("utf-8"))
         self.ui.label.setText(f"Присутствует сообщение длиной {msgSize} байт.")
 
+    @Slot()
+    def msgChanged(self):
+        if self.canUse < 0:
+            return
+
+        byte_array = QByteArray()
+        byte_array.push_back(self.ui.plainTextEdit.toPlainText().encode())
+        self.used = len(self.ui.plainTextEdit.toPlainText())
+
+        if self.canUse < self.used:
+            self.ui.label.setText(f"Размер сообщения превышен.")
+        else:
+            self.ui.label.setText(f"Ещё можно ввести: {self.canUse - self.used} байт.")
 
 
 
@@ -202,11 +215,10 @@ class MainWindow(QMainWindow):
 
 
 
-
-def set_bit(image: QImage, index, value) -> None:
-    pixel_index = index // 3
-    x = pixel_index % image.width()
-    y = pixel_index // image.width()
+def write_bit(image: QImage, index, value) -> None:
+    pxIndex = index // 3
+    x = pxIndex % image.width()
+    y = pxIndex // image.width()
 
     switch = index % 3
     if switch == 0:
@@ -216,15 +228,15 @@ def set_bit(image: QImage, index, value) -> None:
     elif switch == 2:
         image.setPixel(x, y, (image.pixel(x, y) & ~0x000001) | value)
 
-def write_bytes(image: QImage, byte_array: QByteArray, begin) -> None:
-    end = (begin + byte_array.size()) * 8
-    for i in range(begin * 8, end):
-        set_bit(image, i, (int.from_bytes(byte_array[i // 8], "big") >> (7 - i % 8)) & 1)
+def write_byte(image: QImage, byteArray: QByteArray, begin) -> None:
+    last = (begin + byteArray.size()) * 8
+    for i in range(begin * 8, last):
+        write_bit(image, i, (int.from_bytes(byteArray[i // 8], "big") >> (7 - i % 8)) & 1)
 
-def get_bit(image: QImage, index) -> bool:
-    pixel_index = index // 3
-    x = pixel_index % image.width()
-    y = pixel_index // image.width()
+def read_bit(image: QImage, index) -> bool:
+    pxIndex = index // 3
+    x = pxIndex % image.width()
+    y = pxIndex // image.width()
 
     switch = index % 3
     if switch == 0:
@@ -236,19 +248,19 @@ def get_bit(image: QImage, index) -> bool:
     else:
         raise Exception()
 
-def read_bytes(image: QImage, begin, length) -> QByteArray:
-    byte_array = QByteArray()
+def read_byte(image: QImage, begin, length) -> QByteArray:
+    byteArray = QByteArray()
     buffer = 0
-    end = (begin + length) * 8
+    last = (begin + length) * 8
 
-    for i in range(begin * 8, end):
-        buffer = (buffer << 1) | get_bit(image, i)
+    for i in range(begin * 8, last):
+        buffer = (buffer << 1) | read_bit(image, i)
 
         if i % 8 == 7:
-            byte_array.push_back(bytes((buffer,)))
+            byteArray.push_back(bytes((buffer,)))
             buffer = 0
 
-    return byte_array
+    return byteArray
 
     
 
