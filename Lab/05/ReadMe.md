@@ -46,7 +46,7 @@
 
 ### Ответ на вопрос про зашифрованное сообщение: Как зовут и что он обещал?
 
-[Ответ тут](Rick.html)
+[Ответ тут](./media/Rick.html)
 
 <p align="center">
 <img src="media/Rick.png"><br>
