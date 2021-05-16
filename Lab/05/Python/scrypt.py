@@ -151,7 +151,7 @@ class MainWindow(QMainWindow):
         path, _ = QFileDialog.getSaveFileName(self, "Сохранить картинку", "", "Допустимые форматы (*.png)")
 
         if self.image.save(path, "PNG"):
-            self.ui.label.setText("Изображение успешно сохранено")                                                       #убрал f
+            self.ui.label.setText("Изображение успешно сохранено")                                                      
             return
         else:
             self.ui.label.setText('Не удалось сохранить изображение')
