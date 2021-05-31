@@ -2,15 +2,17 @@ from tkinter import *
 import json
 import requests
 
-def WeatherReload(event=None):
+
+def weather_reload(event=None):
 	r = requests.get('http://localhost:3000/raw').content.decode("UTF8")
 	weather = json.loads(r)
 	description.config(text=str(weather["description"]))
 	temperature.config(text=str(weather["temperature"]) + "°C")
 
+
 root = Tk()
 root.title("Погода")
-root.bind("<Button-3>", WeatherReload)
+root.bind("<Button-3>", weather_reload)
 root.geometry("185x220")
 
 TopFrame = Frame(root, bg="#ffcd57")

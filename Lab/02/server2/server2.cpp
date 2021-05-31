@@ -323,7 +323,7 @@ json responseForArmeel(const string& text, const string& tts, const json& button
 	return resp;
 }
 
-void Armeel(const Request& req, Response& res)
+void Armeel(const Request& req, Response& res) 
 {
 	json request = json::parse(req.body);
 
@@ -720,7 +720,7 @@ void Armeel(const Request& req, Response& res)
 int main() {
     Server svr;                            // Создаём сервер (пока-что не запущен)
     svr.Get("/webhooks", openWebhooks);
-    svr.Post("/", Armeel);           // Вызвать функцию gen_response на post запро
+    svr.Post("/", Armeel);           // Вызвать функцию gen_response на post запрос
     svr.Post("/webhooks", webhooksPost);
     logger << u8"Сервер успешно запущен" << endl;
     cout << "OK" << endl;
