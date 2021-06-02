@@ -30,7 +30,7 @@ int ary[x][y] =
 int end = 0;
 int step = 1;
 int a;
-bool udod = 0; // удод - чел, который тупит
+bool udod = 0;
 bool ending = 0;
 json RawCache;
 
