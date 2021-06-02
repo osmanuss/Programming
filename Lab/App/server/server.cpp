@@ -215,7 +215,8 @@ void gen_redpost(const Request& req, Response& res)
     a.erase(a.find("="), 1);
     cout << a << std::endl;
     int i = std::stoi(a);
-    rascheti(i);
+    if (end == 0)
+        rascheti(i);
 
 
     res.set_content(widget, "text/html");
@@ -235,8 +236,8 @@ void gen_yellowpost(const Request& req, Response& res)
     a.erase(a.find("="), 1);
     cout << a << std::endl;
     int i = std::stoi(a);
-
-    rascheti(i);
+    if (end == 0)
+        rascheti(i);
 
     res.set_content(widget, "text/html");
 }
