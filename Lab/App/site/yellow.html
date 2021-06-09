@@ -3,8 +3,9 @@
 	<head>
 	    <meta charset="utf-8">
 	    <title>Выберите колонку</title>
+	    <link rel="stylesheet" type="text/css" href="stil.css">
 	    <style>
-			h1 
+	    	h1 
 			{
 				margin-top: 5%;
 				font-size: 35pt;
@@ -13,11 +14,47 @@
 			table
 			{
 				border-collapse: separate;
-  				border-spacing: 100pt;
+				border-spacing: 100pt;
 			}
 			td
 			{
 				font-size: 35pt;
+			}
+			.red
+			{
+				text-decoration: none;
+				display: inline-block;
+				padding: 15px 30px;
+				border-radius: 10px;
+				box-shadow: 0 0 40px 40px #90130F inset, 0 0 0 0 #F137A6;
+				font-family: 'Montserrat', sans-serif;
+				font-weight: bold;
+				letter-spacing: 2px;
+				color: white;
+				transition: .15s ease-in-out;
+			}
+			.red:hover
+			{
+				box-shadow: 0 0 10px 0 #F137A6 inset, 0 0 10px 4px #F137A6;
+				color: #90130F;
+			}
+			.yellow 
+			{
+				text-decoration: none;
+				display: inline-block;
+				padding: 15px 30px;
+				border-radius: 10px;
+				box-shadow: 0 0 40px 40px #92961A inset, 0 0 0 0 #F137A6;
+				font-family: 'Montserrat', sans-serif;
+				font-weight: bold;
+				letter-spacing: 2px;
+				color: white;
+				transition: .15s ease-in-out;
+			}
+			.yellow:hover 
+			{
+				box-shadow: 0 0 10px 0 #92961A inset, 0 0 10px 4px #F137A6;
+				color: #92961A;
 			}
 		</style>
 	</head>
@@ -30,42 +67,42 @@
 	    	<tr>
 	    		<td>
 	    			<form action=/yellow method=post>
-	    				<button name=8>1</button>
+	    				<button name=8 class="yellow">1</button>
 	    			</form>
 	    		</td>
 	    		<td>
 	    			<form action=/yellow method=post>
-	    				<button name=9>2</button>
+	    				<button name=9 class="yellow">2</button>
 	    			</form>
 	    		</td>
 	    		<td>
 	    			<form action=/yellow method=post>
-	    				<button name=10>3</button>
+	    				<button name=10 class="yellow">3</button>
 	    			</form>
 	    		</td>
 	    		<td>
 	    			<form action=/yellow method=post>
-	    				<button name=11>4</button>
+	    				<button name=11 class="yellow">4</button>
 	    			</form>
 	    		</td>
 	    		<td>
 	    			<form action=/yellow method=post>
-	    				<button name=12>5</button>
+	    				<button name=12 class="yellow">5</button>
 	    			</form>
 	    		</td>
 	    		<td>
 	    			<form action=/yellow method=post>
-	    				<button name=13>6</button>
+	    				<button name=13 class="yellow">6</button>
 	    			</form>
 	    		</td>
 	    		<td>
 	    			<form action=/yellow method=post>
-	    				<button name=14>7</button>
+	    				<button name=14 class="yellow">7</button>
 	    			</form>
 	    		</td>
 	    	</tr>
 	    </table>
 	    </div>
-	    <a href="/sait">Назад</a>
+	    <a href="/sait" class="yellow">Назад</a>
 	</body>
 	</html>

@@ -30,7 +30,6 @@ int ary[x][y] =
 int end = 0;
 int step = 1;
 int a;
-bool udod = 0;
 bool ending = 0;
 json RawCache;
 
@@ -38,8 +37,6 @@ json RawCache;
 
 void rascheti(int a)
 {
-
-
     if (step == 1)
     {
         std::cout << "\nХодит красный\n";
@@ -56,12 +53,7 @@ void rascheti(int a)
     }
     a = a - 1;
 
-    udod = 0;
-
     if ((a > 6) or (a < 0))
-        udod = 1;
-
-    if (udod == 1)
         return;
 
     for (int i = 1; i < 7; i++)                     // Падение фишки
@@ -72,11 +64,8 @@ void rascheti(int a)
             break;
         }
         if (i == 6)
-            udod = 1;
+            return;
     }
-
-    if (udod == 1)
-        return;
 
 
     for (int i = 0; i < 6; i++)                     // Вычисление победителя по горизонтали
@@ -250,9 +239,26 @@ void gen_response(const Request& req, Response& res)
     res.set_content(finish.dump(), "text/json");
 }
 
+void new_game(const Request& req, Response& res)
+{
+    for (int i = 0; i < 6; i++)
+        for (int j = 0; j < 7; j++)
+            ary[i][j] = 0;
+    step = 1;
+    end = 0;
+    ending = 0;
+    std::cout << "replay";
+
+
+    RawCache["step"] = step - 1;
+    RawCache["array"] = ary;
+    ofstream wc("example.json");
+    cout << "Generating cache..." << endl;
+    wc << std::setw(2) << RawCache << std::endl;
+}
+
 int main()
 {
-
     setlocale(LC_ALL, "rus");
     std::cout << "Игра началась";
 
@@ -267,6 +273,7 @@ int main()
     svr.Get("/yellow", gen_yellow);
     svr.Get("/sait", gen_sait);
     svr.Get("/", gen_response);
+    svr.Get("/new", new_game);
     svr.Post("/red", gen_redpost);
     svr.Post("/yellow", gen_yellowpost);
     std::cout << "Start server... OK\n";

@@ -34,6 +34,27 @@ cordi = [
 ]
 
 
+class Button:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.inactive_color = (13, 162, 58)
+        self.active_color = (23, 204, 58)
+
+    def draw(self, x, y, message):
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+
+        if (x < mouse[0] < x + self.width) and (y < mouse[1] < y + self.height):
+            pygame.draw.rect(display, self.active_color, (x, y, self.width, self.height))
+
+            if click[0] == 1:
+                p = requests.get('http://localhost:1234/new').content.decode("UTF8")
+        else:
+            pygame.draw.rect(display, self.inactive_color, (x, y, self.width, self.height))
+        print_text(message, x, y)
+
+
 def otrisovka():
     global array
     for i in range(6):
@@ -43,9 +64,16 @@ def otrisovka():
                     display.blit(balls[k], (cordi[i][j]))
 
 
+def print_text(message, x, y, font_size=30, font_color=(0, 0, 0), font_type='PingPong.ttf'):
+    font_type = pygame.font.Font(font_type, font_size)
+    text = font_type.render(message, True, font_color)
+    display.blit(text, (x, y))
+
+
 def run_game():
     game = True
     field = pygame.image.load('field.png')
+    button = Button(100, 50)
 
     while game:
         global array
@@ -72,8 +100,11 @@ def run_game():
         elif step == 3:
             display.blit(win_yellow, (0, 0))
 
+        if step > 1:
+            button.draw(650, 76, 'Again?')
+
         pygame.display.update()
-        clock.tick(1)
+        clock.tick(20)
 
 
 run_game()
