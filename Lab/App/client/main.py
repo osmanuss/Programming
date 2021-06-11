@@ -59,7 +59,7 @@ def otrisovka():
     global array
     for i in range(6):
         for j in range(7):
-            for k in 1, 2, 3, 4:
+            for k in range(1, 5):
                 if array[i][j] == k:
                     display.blit(balls[k], (cordi[i][j]))
 
@@ -100,11 +100,22 @@ def run_game():
         elif step == 3:
             display.blit(win_yellow, (0, 0))
 
-        if step > 1:
+        koef = 1
+        for i in range(6):
+            for j in range(7):
+                if array[i][j] != 0:
+                    koef = 1
+                else:
+                    koef = 0
+                    break
+            if koef == 0:
+                break
+
+        if step > 1 or koef == 1:
             button.draw(650, 76, 'Again?')
 
         pygame.display.update()
-        clock.tick(20)
+        clock.tick(7)
 
 
 run_game()
